@@ -23,4 +23,13 @@ class VoteRepository extends ServiceEntityRepository
         $vote=0;
        // $votes=
     }
+    public function findOneByLast()
+    {
+        return $this->createQueryBuilder('s')
+            ->setMaxResults(1)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

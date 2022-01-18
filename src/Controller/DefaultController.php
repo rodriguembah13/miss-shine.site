@@ -76,7 +76,7 @@ class DefaultController extends AbstractController
         $client_currency = $request->get("clientcurrency");
         $client_votes = $request->get("clientvote");
         $endpoints = "payment";
-        $notify_url = $this->generateUrl('notifyurlajax', ['vote' => $client_votes, 'candidat' => $candidat_id]);
+        $notify_url = $this->generateUrl('notifyurlajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
 
         $transaction_id = "";
         $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
@@ -119,6 +119,15 @@ class DefaultController extends AbstractController
             'candidat' => $candidat,
         ]);
     }
+    private function getLast(){
+        $last = null;
+        if (null == $this->voteRepository->findOneByLast()) {
+            $last = 0;
+        } else {
+            $last = $this->voteRepository->findOneByLast()->getId();
+        }
+        return $last+1;
+    }
 
     /**
      * @Route("/sendpaiementcinetpayinternational/ajax", name="sendpaiementcinetpayinternational", methods={"POST"})
@@ -135,7 +144,7 @@ class DefaultController extends AbstractController
         $current_url = "";
         $transaction_id = "";
         $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-        $notify_url = $this->generateUrl('notifyurlajax', ['vote' => $client_votes, 'candidat' => $candidat_id]);
+        $notify_url = $this->generateUrl('notifyurlajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
         for ($i = 1; $i <= 12; ++$i) {
             $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
         }
@@ -262,7 +271,7 @@ class DefaultController extends AbstractController
      */
     public function notifyurl(Request $request): Response
     {
-        $this->logger->info("notify call");
+        $this->logger->error("notify call");
         $site_id=$_POST['cpm_site_id'];
         $transaction=$_POST['cpm_trans_id'];
         $vote_=$this->voteRepository->find($_GET['vote']);
@@ -320,8 +329,6 @@ class DefaultController extends AbstractController
         // $_SESSION['VOTING_REFERENCE'] = $reference;
         $SUCCESS_CALLBACK_URL = 'wc_payment_success';
         $FAILURE_CALLBACK_URL = 'wc_payment_failure';
-        $SUCCESS_REDIRECT_URL = 'wc_payment_success';
-        $FAILURE_REDIRECT_URL = 'wc_payment_failure';
         $data = [
             'amount' => 100,
             'currency_code' => 'XAF',
