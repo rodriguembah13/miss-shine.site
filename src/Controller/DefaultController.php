@@ -48,7 +48,33 @@ class DefaultController extends AbstractController
             'candidats' => $this->candidatRepository->findAll(),
         ]);
     }
-
+    /**
+     * @Route("/inscription", name="inscription")
+     */
+    public function inscription(): Response
+    {
+        return $this->render('default/inscription.html.twig', [
+            'candidats' => $this->candidatRepository->findAll(),
+        ]);
+    }
+    /**
+     * @Route("/candidats", name="candidats")
+     */
+    public function candidats(): Response
+    {
+        return $this->render('default/candidats.html.twig', [
+            'candidats' => $this->candidatRepository->findAll(),
+        ]);
+    }
+    /**
+     * @Route("/criteres", name="criteres")
+     */
+    public function criteres(): Response
+    {
+        return $this->render('default/criteres.html.twig', [
+            'candidats' => $this->candidatRepository->findAll(),
+        ]);
+    }
     /**
      * @Route("/show/{url}", name="showcandidat")
      */

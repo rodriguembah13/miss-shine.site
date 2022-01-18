@@ -31,17 +31,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class=" card personal-thumb mb-30">
+                    {#  <div class=" card personal-thumb mb-30">
                         <div class="card-img">
                             <img src="{{ asset('uploads/' ~ candidat.photo) }}" alt="" height="300">
                         </div>
-                    </div>
-                    {# <div class="my-img position-relative mb-50">
+                    </div>#}
+                     <div class="my-img position-relative mb-50">
                         <img src="{{ asset('uploads/' ~ candidat.photo) }}" alt="">
-                        <div class="my-style">
-                            <img src="{{ asset('front/images/me/my_cemera.png') }}" alt="">
-                        </div>
-                    </div> #}
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card">
@@ -49,11 +46,11 @@
                             <div class="about-me-top">
                                 <h2>{{ candidat.firstname }} {{ candidat.lastname }}</h2>
                                 {% if candidat.position == 1 %}
-                                    <p>Position: 1ere</p>
+                                    <p >Position: <span style="color: #721c24;font-weight: 400;font-size: 18px">1ere</span></p>
                                 {% else %}
-                                    <p>Position: {{ candidat.position }} eme</p>
+                                    <p>Position: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.position }} eme</span></p>
                                 {% endif %}
-                                <p>Nombres de votes: {{ candidat.vote }}</p>
+                                <p>Nombres de votes: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.vote }}</span></p>
                                 <article>{{ candidat.description }}
                                 </article>
                             </div>

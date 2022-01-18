@@ -86,6 +86,7 @@ class VoteController extends AbstractController
                         ->addSelect('c')
                         ->from(Vote::class, 'e')
                         ->leftJoin('e.candidat', 'c')
+                        ->orderBy('e.id','DESC')
                     ;
                 },
             ])->handleRequest($request);

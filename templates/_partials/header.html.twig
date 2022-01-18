@@ -27,12 +27,12 @@
         <nav id="mainav" class="fl_right">
             <!-- ################################################################################################ -->
             <ul class="clear">
-                <li class="active"><a href="{{ path('home') }}">Home</a></li>
-                <li><a href="#">Inscription</a></li>
-                <li><a href="#">Critéres</a></li>
-                <li><a href="#">Candidats</a></li>
-                <li><a href="#">Boutique</a></li>
-                <li><a href="#">Services</a></li>
+                <li {% if app.request.attributes.get( '_route' ) starts with 'home' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('home') }}">Accueil</a></li>
+                <li{% if app.request.attributes.get( '_route' ) starts with 'inscription' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('inscription') }}">Inscription</a></li>
+                <li{% if app.request.attributes.get( '_route' ) starts with 'criteres' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('criteres') }}">Critéres</a></li>
+                <li{% if app.request.attributes.get( '_route' ) starts with 'candidats' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('candidats') }}">Candidats</a></li>
+                <li{% if app.request.attributes.get( '_route' ) starts with 'boutique' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('boutique') }}">Boutique</a></li>
+                <li{% if app.request.attributes.get( '_route' ) starts with 'service' %} class="active"{% else %} class="" {% endif%}><a href="{{ path('service') }}">Services</a></li>
             </ul>
             <!-- ################################################################################################ -->
         </nav>
