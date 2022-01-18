@@ -58,8 +58,8 @@ class DefaultController extends AbstractController
         if ($candidat == null) {
             throw  new BadRequestException('This user does not have access to this section.');
         }
-        $this->logger->info("-------ic" . $request->get("url"));
-        $this->logger->error("-------ic" . $request->get("url"));
+       // $this->logger->info("-------ic" . $request->get("url"));
+       // $this->logger->error("-------ic" . $request->get("url"));
         return $this->render('default/detail-candidat.html.twig', [
             'candidat' => $candidat,
         ]);
@@ -88,7 +88,7 @@ class DefaultController extends AbstractController
         $amount = $this->getAmount($client_votes);
         $redirect_url = $this->generateUrl('home');
         $notify_url=$this->params->get('domain').$notify_url;
-        $this->logger->info(strip_tags($notify_url,'/'));
+       // $this->logger->info(strip_tags($notify_url,'/'));
         $data = array(
             'site_id' => $this->params->get('site_id'),
             'currency' => 'XAF',
@@ -101,7 +101,7 @@ class DefaultController extends AbstractController
             'notify_url' => $notify_url,
             'channels' => 'ALL',
         );
-        $this->logger->info(json_encode($data));
+        $this->logger->error("LOGGER-----".json_encode($data));
        // $this->createVote($candidat,$client_votes);
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
@@ -166,7 +166,7 @@ class DefaultController extends AbstractController
             "alternative_currency" => "USD",
             "customer_zip_code" => "77777"
         );
-        dump($data);
+        //dump($data);
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
         $this->logger->info($reference);
