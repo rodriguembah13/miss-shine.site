@@ -44,6 +44,11 @@ class DefaultController extends AbstractController
      */
     public function index(): Response
     {
+        if ($this->params->get('mode')=="ON"){
+            return $this->render('default/maintenance.html.twig', [
+                'candidats' => $this->candidatRepository->findAll(),
+            ]);
+        }
         return $this->render('default/index.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
         ]);

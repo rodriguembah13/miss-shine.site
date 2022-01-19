@@ -8,6 +8,7 @@ parameters:
     api_key: '%env(resolve:APIKEY)%'
     site_id: '%env(resolve:SITE_ID)%'
     domain: '%env(resolve:BASE_DOMAIN)%'
+    mode: '%env(resolve:MODE_MAINTENANCE)%'
 
 services:
     # default configuration for services in *this* file
