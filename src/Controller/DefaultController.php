@@ -48,7 +48,6 @@ class DefaultController extends AbstractController
     public function index(): Response
     {
         $configuration=$this->configRepository->findOneByLast();
-        dump($configuration);
         if ($configuration->getMaintenance()){
             return $this->render('default/maintenance.html.twig', [
                 'candidats' => $this->candidatRepository->findAll(),
