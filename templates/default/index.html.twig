@@ -32,10 +32,12 @@
                                                     </div>
                                                 </div>
                                                 <p>
-                                                    <a type="button" class="btn btn-primary mb-2 py-3 px-4" href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">
+                                                    <a type="button" class="btn btn-primary mb-2 py-3 px-4"
+                                                       href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">
                                                         Partager le lien
                                                     </a>
-                                                    <a type="button" class="btn btn-success mb-2 py-3 px-4" href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">Je
+                                                    <a type="button" class="btn btn-success mb-2 py-3 px-4"
+                                                       href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">Je
                                                         vote
                                                     </a>
                                                 </p>
@@ -55,24 +57,17 @@
     <div class="brand-carousel-wrapper light-blue-bg  wow fadeIn">
         <div class="container">
             <div class="brand-carousel owl-carousel owl-theme">
-                <div class="item">
-                    <img src="{{ asset('images/brand-1.png') }}" alt="" />
-                </div><!-- /.item -->
-                <div class="item">
-                    <img src="{{ asset('images/brand-4.png') }}" alt="" />
-                </div><!-- /.item -->
-                <div class="item">
-                    <img src="{{ asset('images/brand-2.png') }}" alt="" />
-                </div><!-- /.item -->
-                <div class="item">
-                    <img src="{{ asset('images/brand-3.png') }}" alt="" />
-                </div><!-- /.item -->
-                <div class="item">
-                    <img src="{{ asset('images/brand-1.png') }}" alt="" />
-                </div><!-- /.item -->
-                <div class="item">
-                    <img src="{{ asset('images/brand-5.png') }}" alt="" />
-                </div><!-- /.item -->
+                {% for partenaire in partenaires %}
+                    {% if partenaire.logo %}
+                        <div class="item">
+                            <img src="{{ asset('uploads/logo/' ~ partenaire.logo) }}">
+                        </div>
+                    {% else %}
+                        <div class="item">
+                            <img src="{{ asset('images/brand-1.png') }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div><!-- /.brand-carousel -->
         </div><!-- /.thm-container -->
     </div>
@@ -92,7 +87,8 @@
                                 <div class="team-box ml-4 mb-120">
                                     <div class="single-team wow fadeInUpBig">
                                         <div class="team-top d-flex mb-30">
-                                            <div class="team-img">{% if candidat.photo %}
+                                            <div class="team-img">
+                                                {% if candidat.photo %}
                                                     <img src="{{ asset('uploads/' ~ candidat.photo) }}" width="250"
                                                          height="250"
                                                          class="img-responsive img-rounded">
@@ -120,10 +116,10 @@
                                             {% endif %}
                                             <h4>{{ candidat.firstname }} {{ candidat.lastname }}</h4>
                                             <span>Nombres de votes: {{ candidat.vote }}</span>
-                                            <p>{{ candidat.description}} </p>
+                                            <p>{{ candidat.description }} </p>
                                         </div>
                                         <div class="team-bottom">
-                                          <a href="{{ path('showcandidat', {'url': candidat.genericurl }) }}"
+                                            <a href="{{ path('showcandidat', {'url': candidat.genericurl }) }}"
                                                class="btn btn-light btn-radius btn-brd grd1 effect-1">Je
                                                 vote</a>
                                         </div>

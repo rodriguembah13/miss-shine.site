@@ -38,9 +38,18 @@
                     <p>Votes</p>
                 </a>
             </li>
+            <li{% if app.request.attributes.get( '_route' ) starts with 'partenaire_' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('partenaire_index') }}">
+                    <i class="nc-icon nc-user-run"></i>
+                    <p>Partenaires</p>
+                </a>
+            </li>
+            <li class="divider-bar">
+
+            </li>
             <li{% if app.request.attributes.get( '_route' ) starts with 'configuration' %} class="active"{% else %} class="" {% endif%}>
                 <a href="{{ path('configuration') }}">
-                    <i class="nc-icon nc-money-coins"></i>
+                    <i class="nc-icon nc-settings"></i>
                     <p>Configuration</p>
                 </a>
             </li>

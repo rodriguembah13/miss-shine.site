@@ -2,8 +2,11 @@
     opacity: initial;
     visibility: visible;
 }
+.form-group input[type="file"] {
+    opacity: 12;
+}
 .form-check {
-    padding-left: 10px !important;
+    padding-left: 20px !important;
 }
 :root {
     --yellow: #feb60a;

@@ -18,9 +18,9 @@ dt:
     photo: Photo
     quantity: Quantité
     position: Position
-    supply: Fournisseur
-    tva: Tva
-    product: Produit
+    active: Active
+    name: Nom
+    logo: Logo
     total: Total Ht
     phone: téléphone
     birthday: Birthday

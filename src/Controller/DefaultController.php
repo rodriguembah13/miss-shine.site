@@ -7,6 +7,7 @@ use App\Entity\Vote;
 use App\Repository\CandidatRepository;
 use App\Repository\ConfigurationRepository;
 use App\Repository\EditionRepository;
+use App\Repository\PartenaireRepository;
 use App\Repository\VoteRepository;
 use App\Utils\ClientServer;
 use Monolog\Logger;
@@ -27,12 +28,13 @@ class DefaultController extends AbstractController
     private $params;
     private $voteRepository;
     private $configRepository;
+    private $partenaireRepository;
 
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(ConfigurationRepository $configRepository,VoteRepository $voteRepository,ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(PartenaireRepository $partenaireRepository,ConfigurationRepository $configRepository,VoteRepository $voteRepository,ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -40,6 +42,7 @@ class DefaultController extends AbstractController
         $this->params = $paramConverter;
         $this->voteRepository=$voteRepository;
         $this->configRepository=$configRepository;
+        $this->partenaireRepository=$partenaireRepository;
     }
 
     /**
@@ -51,10 +54,12 @@ class DefaultController extends AbstractController
         if ($configuration->getMaintenance()){
             return $this->render('default/maintenance.html.twig', [
                 'candidats' => $this->candidatRepository->findAll(),
+
             ]);
         }
         return $this->render('default/index.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'partenaires'=>$this->partenaireRepository->findBy(['active'=>true])
         ]);
     }
     /**
@@ -97,6 +102,7 @@ class DefaultController extends AbstractController
        // $this->logger->error("-------ic" . $request->get("url"));
         return $this->render('default/detail-candidat.html.twig', [
             'candidat' => $candidat,
+            'partenaires'=>$this->partenaireRepository->findBy(['active'=>true])
         ]);
     }
 

@@ -1,0 +1,15 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Edit Partenaire{% endblock %}
+
+{% block body %}
+<div class="content">
+    <div class="card card-stats">
+        <div class="card-header">
+            <a class="btn btn-dark" href="{{ path('partenaire_new') }}">Create new</a>
+        </div>
+        <div class="card-body ">
+
+    {{ include('partenaire/_form.html.twig', {'button_label': 'Update'}) }}
+        </div></div></div>
+{% endblock %}
