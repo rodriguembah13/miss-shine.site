@@ -1,3 +1,10 @@
+.form-check-radio input[type="radio"], .form-check input[type="checkbox"] {
+    opacity: initial;
+    visibility: visible;
+}
+.form-check {
+    padding-left: 10px !important;
+}
 :root {
     --yellow: #feb60a;
     --red: #ff0062;

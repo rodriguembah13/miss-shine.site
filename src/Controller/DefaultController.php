@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Candidat;
 use App\Entity\Vote;
 use App\Repository\CandidatRepository;
+use App\Repository\ConfigurationRepository;
 use App\Repository\EditionRepository;
 use App\Repository\VoteRepository;
 use App\Utils\ClientServer;
@@ -25,18 +26,20 @@ class DefaultController extends AbstractController
     private $logger;
     private $params;
     private $voteRepository;
+    private $configRepository;
 
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(VoteRepository $voteRepository,ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(ConfigurationRepository $configRepository,VoteRepository $voteRepository,ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
         $this->logger = $logger;
         $this->params = $paramConverter;
         $this->voteRepository=$voteRepository;
+        $this->configRepository=$configRepository;
     }
 
     /**
@@ -44,7 +47,9 @@ class DefaultController extends AbstractController
      */
     public function index(): Response
     {
-        if ($this->params->get('mode')=="ON"){
+        $configuration=$this->configRepository->findOneByLast();
+        dump($configuration);
+        if ($configuration->getMaintenance()){
             return $this->render('default/maintenance.html.twig', [
                 'candidats' => $this->candidatRepository->findAll(),
             ]);

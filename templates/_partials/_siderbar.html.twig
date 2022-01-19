@@ -38,6 +38,12 @@
                     <p>Votes</p>
                 </a>
             </li>
+            <li{% if app.request.attributes.get( '_route' ) starts with 'configuration' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('configuration') }}">
+                    <i class="nc-icon nc-money-coins"></i>
+                    <p>Configuration</p>
+                </a>
+            </li>
         </ul>
     </div>
 </div>
