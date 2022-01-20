@@ -118,6 +118,12 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.2.0"
     },
+    "mailchimp/marketing": {
+        "version": "3.0.73"
+    },
+    "mailchimp/transactional": {
+        "version": "1.0.47"
+    },
     "monolog/monolog": {
         "version": "2.2.0"
     },

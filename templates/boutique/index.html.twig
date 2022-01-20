@@ -3,7 +3,24 @@
 {% block title %}Boutiques{% endblock %}
 
 {% block body %}
-    <div class="wrapper bgded overlay" style="background-image:url('../images/demo/backgrounds/01.png');">
-        <div class="page-title" > <h1 class="heading">Boutiques</h1></div>
+    <div class="wrapper bgded overlay" style="background-image:url({{ asset('images/imagemiss.jpg') }});">
+        <div class="page-title text-center wow fadeInRightBig"> <h1 class="heading">Boutiques</h1></div>
+    </div>
+    <div class="brand-carousel-wrapper light-blue-bg  wow fadeIn">
+        <div class="container">
+            <div class="brand-carousel owl-carousel owl-theme">
+                {% for partenaire in partenaires %}
+                    {% if partenaire.logo %}
+                        <div class="item">
+                            <img src="{{ asset('uploads/logo/' ~ partenaire.logo) }}">
+                        </div>
+                    {% else %}
+                        <div class="item">
+                            <img src="{{ asset('images/brand-1.png') }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div><!-- /.brand-carousel -->
+        </div><!-- /.thm-container -->
     </div>
 {% endblock %}

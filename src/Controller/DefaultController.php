@@ -10,7 +10,6 @@ use App\Repository\EditionRepository;
 use App\Repository\PartenaireRepository;
 use App\Repository\VoteRepository;
 use App\Utils\ClientServer;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -34,15 +33,15 @@ class DefaultController extends AbstractController
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(PartenaireRepository $partenaireRepository,ConfigurationRepository $configRepository,VoteRepository $voteRepository,ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
         $this->logger = $logger;
         $this->params = $paramConverter;
-        $this->voteRepository=$voteRepository;
-        $this->configRepository=$configRepository;
-        $this->partenaireRepository=$partenaireRepository;
+        $this->voteRepository = $voteRepository;
+        $this->configRepository = $configRepository;
+        $this->partenaireRepository = $partenaireRepository;
     }
 
     /**
@@ -50,8 +49,8 @@ class DefaultController extends AbstractController
      */
     public function index(): Response
     {
-        $configuration=$this->configRepository->findOneByLast();
-        if ($configuration->getMaintenance()){
+        $configuration = $this->configRepository->findOneByLast();
+        if ($configuration->getMaintenance()) {
             return $this->render('default/maintenance.html.twig', [
                 'candidats' => $this->candidatRepository->findAll(),
 
@@ -59,18 +58,24 @@ class DefaultController extends AbstractController
         }
         return $this->render('default/index.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
-            'partenaires'=>$this->partenaireRepository->findBy(['active'=>true])
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
+
     /**
-     * @Route("/inscription", name="inscription")
+     * @Route("/inscription", name="inscription", methods={"GET","POST"})
      */
-    public function inscription(): Response
+    public function inscription(Request $request): Response
     {
+        if ($request->getMethod() == "POST") {
+
+        }
         return $this->render('default/inscription.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
+
     /**
      * @Route("/candidats", name="candidats")
      */
@@ -78,8 +83,10 @@ class DefaultController extends AbstractController
     {
         return $this->render('default/candidats.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
+
     /**
      * @Route("/criteres", name="criteres")
      */
@@ -87,8 +94,10 @@ class DefaultController extends AbstractController
     {
         return $this->render('default/criteres.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
+
     /**
      * @Route("/show/{url}", name="showcandidat")
      */
@@ -98,11 +107,11 @@ class DefaultController extends AbstractController
         if ($candidat == null) {
             throw  new BadRequestException('This user does not have access to this section.');
         }
-       // $this->logger->info("-------ic" . $request->get("url"));
-       // $this->logger->error("-------ic" . $request->get("url"));
+        // $this->logger->info("-------ic" . $request->get("url"));
+        // $this->logger->error("-------ic" . $request->get("url"));
         return $this->render('default/detail-candidat.html.twig', [
             'candidat' => $candidat,
-            'partenaires'=>$this->partenaireRepository->findBy(['active'=>true])
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
 
@@ -128,8 +137,8 @@ class DefaultController extends AbstractController
         $product = $candidat->getFirstname() . " " . $candidat->getLastname();
         $amount = $this->getAmount($client_votes);
         $redirect_url = $this->generateUrl('home');
-        $notify_url=$this->params->get('domain').$notify_url;
-       // $this->logger->info(strip_tags($notify_url,'/'));
+        $notify_url = $this->params->get('domain') . $notify_url;
+        // $this->logger->info(strip_tags($notify_url,'/'));
         $data = array(
             'site_id' => $this->params->get('site_id'),
             'currency' => 'XAF',
@@ -142,32 +151,34 @@ class DefaultController extends AbstractController
             'notify_url' => $notify_url,
             'channels' => 'ALL',
         );
-        $this->logger->error("LOGGER-----".json_encode($data));
-       // $this->createVote($candidat,$client_votes);
+        $this->logger->error("LOGGER-----" . json_encode($data));
+        // $this->createVote($candidat,$client_votes);
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
-       // dump($response);
-      //  $this->logger->info($response);
+        // dump($response);
+        //  $this->logger->info($response);
         if ($response['code'] == "201") {
-            $this->createVote($candidat,$client_votes);
+            $this->createVote($candidat, $client_votes);
             $url = $response["data"]["payment_url"];
             $link_array = explode('/', $url);
             return $this->redirect($url);
         }
 
-       // return $this->redirectToRoute("home");
+        // return $this->redirectToRoute("home");
         return $this->render('default/detail-candidat.html.twig', [
             'candidat' => $candidat,
         ]);
     }
-    private function getLast(){
+
+    private function getLast()
+    {
         $last = null;
         if (null == $this->voteRepository->findOneByLast()) {
             $last = 0;
         } else {
             $last = $this->voteRepository->findOneByLast()->getId();
         }
-        return $last+1;
+        return $last + 1;
     }
 
     /**
@@ -190,10 +201,10 @@ class DefaultController extends AbstractController
             $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
         }
         $reference = $transaction_id;
-        $product = "vote miss-shinne ".$candidat->getFirstname() . " " . $candidat->getLastname();
-        $amount = $this->convertXAF("USD",$this->getAmountInternational($client_votes));
+        $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
+        $amount = $this->convertXAF("USD", $this->getAmountInternational($client_votes));
         $redirect_url = "";
-        $notify_url=$this->params->get('domain').$notify_url;
+        $notify_url = $this->params->get('domain') . $notify_url;
         $data = array(
             'site_id' => $this->params->get('site_id'),
             'currency' => 'XAF',
@@ -216,12 +227,11 @@ class DefaultController extends AbstractController
             "alternative_currency" => "USD",
             "customer_zip_code" => "77777"
         );
-        //dump($data);
+        $this->logger->error("LOGGER-----" . json_encode($data));
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
-        $this->logger->info($reference);
         if ($response['code'] == "201") {
-            $this->createVote($candidat,$client_votes);
+            $this->createVote($candidat, $client_votes);
             $url = $response["data"]["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
@@ -244,6 +254,7 @@ class DefaultController extends AbstractController
         }
         return $val;
     }
+
     protected function getAmountInternational($votes)
     {
         $val = 0;
@@ -258,6 +269,7 @@ class DefaultController extends AbstractController
         }
         return $val;
     }
+
     protected function getAmount($votes)
     {
         $val = 0;
@@ -272,9 +284,11 @@ class DefaultController extends AbstractController
         }
         return $val;
     }
-    protected function createVote(Candidat $candidat,$qtevote){
+
+    protected function createVote(Candidat $candidat, $qtevote)
+    {
         $entityManager = $this->getDoctrine()->getManager();
-        $vote=new Vote();
+        $vote = new Vote();
         $vote->setCandidat($candidat);
         $vote->setNombreVote($qtevote);
         $vote->setMonaie("XAF");
@@ -284,14 +298,16 @@ class DefaultController extends AbstractController
         $entityManager->persist($vote);
         $entityManager->flush();
     }
-    protected function updateVote(Vote $vote,$status){
-        if ($status=="ACCEPTED"){
+
+    protected function updateVote(Vote $vote, $status)
+    {
+        if ($status == "ACCEPTED") {
             $vote->setStatus($status);
-            $candidat=$vote->getCandidat();
-            $candidat->setVote($candidat->getVote()+$vote->getNombreVote());
+            $candidat = $vote->getCandidat();
+            $candidat->setVote($candidat->getVote() + $vote->getNombreVote());
             $this->generateRang();
             //$candidat->setPosition($this->getRangVoting($candidat));
-        }else{
+        } else {
             $vote->setStatus($status);
         }
         $entityManager = $this->getDoctrine()->getManager();
@@ -313,30 +329,32 @@ class DefaultController extends AbstractController
     public function notifyurl(Request $request): Response
     {
         $this->logger->error("notify call");
-        $site_id=$_POST['cpm_site_id'];
-        $transaction=$_POST['cpm_trans_id'];
-        $vote_=$this->voteRepository->find($_GET['vote']);
+        $site_id = $_POST['cpm_site_id'];
+        $transaction = $_POST['cpm_trans_id'];
+        $vote_ = $this->voteRepository->find($_GET['vote']);
         $base_url = "https://api-checkout.cinetpay.com/v2/payment/check";
-        if ($vote_->getStatus() =="PENDING"){
-        $data = array(
-            'apikey' => $this->params->get('api_key'),
-            'site_id' => $site_id,
-            'transaction_id' => $transaction
-        );
-        $client = new ClientServer();
-        $response = $client->postfinal($base_url, $data);
-        if ($response['data']['status']=="ACCEPTED"){
-            $this->updateVote($vote_,'ACCEPTED');
-        }elseif ($response['data']['status']=="REFUSED"){
-            $this->updateVote($vote_,'REFUSED');
+        if ($vote_->getStatus() == "PENDING") {
+            $data = array(
+                'apikey' => $this->params->get('api_key'),
+                'site_id' => $site_id,
+                'transaction_id' => $transaction
+            );
+            $client = new ClientServer();
+            $response = $client->postfinal($base_url, $data);
+            if ($response['data']['status'] == "ACCEPTED") {
+                $this->updateVote($vote_, 'ACCEPTED');
+            } elseif ($response['data']['status'] == "REFUSED") {
+                $this->updateVote($vote_, 'REFUSED');
+            }
         }
-        }
-        return new JsonResponse($response,200);
+        return new JsonResponse($response, 200);
     }
-    protected function generateRang(){
-        $edition=$this->editionrepository->findOneBy(['status'=>'Publie']);
-        $candidats=$this->candidatRepository->findByEdition($edition);
-        foreach ($candidats as $candidat){
+
+    protected function generateRang()
+    {
+        $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);
+        $candidats = $this->candidatRepository->findByEdition($edition);
+        foreach ($candidats as $candidat) {
             $j = 0;
             for ($i = 0; $i < sizeof($candidats); $i++) {
                 if ($candidat->getVote() === $candidats[$i]->getVote()) {
@@ -405,10 +423,11 @@ class DefaultController extends AbstractController
 
         //return new JsonResponse($data, 200);
     }
+
     protected function getRangVoting(Candidat $candidat)
     {
-        $edition=$this->editionrepository->findOneBy(['status'=>'Publie']);
-        $candidats=$this->candidatRepository->findBy(['edition'=>$edition],[]);
+        $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);
+        $candidats = $this->candidatRepository->findBy(['edition' => $edition], []);
         $j = 0;
         for ($i = 0; $i < sizeof($candidats); $i++) {
             if ($candidat->getVote() === $candidats[$i]->getVote()) {
@@ -417,4 +436,5 @@ class DefaultController extends AbstractController
         }
         return $j;
     }
+
 }
