@@ -578,6 +578,8 @@
 
 .brand-carousel img {
     color: #707070;
+    width: 110px;
+    height: 110px;
     -webkit-transition: all .4s ease;
     transition: all .4s ease;
 }

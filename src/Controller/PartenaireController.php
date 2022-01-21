@@ -63,7 +63,7 @@ class PartenaireController extends AbstractController
             ->add('id', TwigColumn::class, [
                 'className' => 'buttons text-center',
                 'label' => 'action',
-                'template' => 'candidat/buttonbar.html.twig',
+                'template' => 'partenaire/buttonbar.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
                 }])
@@ -155,6 +155,21 @@ class PartenaireController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFilename = $form['imageFilename']->getData();
+            if ($imageFilename) {
+                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/logo';
+                $originalFilename = pathinfo($imageFilename->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFilename->guessExtension();
+
+                try {
+                    $imageFilename->move(
+                        $destination,
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                }
+                $partenaire->setLogo($newFilename);
+            }
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('partenaire_index', [], Response::HTTP_SEE_OTHER);
