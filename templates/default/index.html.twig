@@ -26,21 +26,26 @@
                                                 <h2 class="mb-4">{{ candidat.firstname }} {{ candidat.lastname }}</h2>
                                                 <p class="h5">Nombre de votes: {{ candidat.vote }}</p>
                                                 <p class="h5 mb-4">{{ candidat.description }}</p>
-                                                <div class="row justify-content-end">
-                                                    <div class="col-xl-8">
-                                                        <p></p>
-                                                    </div>
-                                                </div>
                                                 <p>
+                                              {#  <div class="fb-share-button"
+                                                     data-href="https://staging.miss-shine.site/show/61e71fa935240-61e71fa935242"
+                                                     data-layout="button_count">
+                                                </div>#}
                                                     <a type="button" class="btn btn-primary mb-2 py-3 px-4"
-                                                       href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">
+                                                       href="#">
                                                         Partager le lien
                                                     </a>
+                                                    <input value="{{ path('showcandidat', {'url': candidat.genericurl }) }}" hidden>
                                                     <a type="button" class="btn btn-success mb-2 py-3 px-4"
                                                        href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">Je
                                                         vote
                                                     </a>
                                                 </p>
+                                                <div id="social-platforms" class="row">
+                                                    <a class=" btn btn-icon btn-facebook" href="https://facebook.com/MissShineCameroon"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                                                    <a class=" btn btn-icon btn-twitter" href="https://twitter.com/MissShine2021"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                                                    <a class=" btn btn-icon btn-instagram" href="https://instagram.com/miss_shine_237"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

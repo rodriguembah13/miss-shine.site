@@ -22,9 +22,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card">
+                        <div class="card-header">
+                            <h1>{{ candidat.firstname }} {{ candidat.lastname }}</h1>
+                        </div>
                         <div class="card-body">
                             <div class="about-me-top">
-                                <h2>{{ candidat.firstname }} {{ candidat.lastname }}</h2>
+
                                 {% if candidat.position == 1 %}
                                     <p >Position: <span style="color: #721c24;font-weight: 400;font-size: 18px">1ere</span></p>
                                 {% else %}
@@ -95,6 +98,7 @@
                                                 </form>
                                             </div> <!-- end col -->
                                         </div> <!-- end row -->
+
                                     </div>
 
                                     <div class="tab-pane" id="basictab2">
@@ -144,8 +148,15 @@
                                     </div>
                                 </div>
                             </div>
-                            </form>
                         </div> <!-- end col -->
+                        <div class="card-footer">
+                            <h3>Nous suivre </h3>
+                            <div id="social-platforms" class="row">
+                                <a class=" btn btn-icon btn-facebook" href="https://facebook.com/MissShineCameroon"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                                <a class=" btn btn-icon btn-twitter" href="https://twitter.com/MissShine2021"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                                <a class=" btn btn-icon btn-instagram" href="https://instagram.com/miss_shine_237"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                            </div>
+                        </div>
                     </div> <!-- end row -->
                 </div>
 
