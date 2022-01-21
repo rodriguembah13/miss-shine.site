@@ -1,12 +1,12 @@
 {% extends 'baseback.html.twig' %}
 
-{% block title %}Edition index{% endblock %}
+{% block title %}Editions{% endblock %}
 
 {% block body %}
 <div class="content">
     <div class="card card-stats">
         <div class="card-header">
-            <a class="btn btn-dark" href="{{ path('edition_new') }}">Create new</a>
+            <a class="btn btn-dark" href="{{ path('edition_new') }}">Ajouter</a>
         </div>
         <div class="card-body ">
 
@@ -29,9 +29,10 @@
                 <td>{{ edition.status }}</td>
                 <td>{{ edition.createdAt ? edition.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ edition.updatedAt ? edition.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('edition_show', {'id': edition.id}) }}">show</a>
-                    <a href="{{ path('edition_edit', {'id': edition.id}) }}">edit</a>
+                <td><div class="btn-group btn-group-sm">
+                    <a class="btn btn-success" href="{{ path('edition_show', {'id': edition.id}) }}">show</a>
+                    <a class="btn btn-primary" href="{{ path('edition_edit', {'id': edition.id}) }}">edit</a>
+                    </div>
                 </td>
             </tr>
         {% else %}

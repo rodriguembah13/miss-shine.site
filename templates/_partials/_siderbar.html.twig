@@ -44,6 +44,12 @@
                     <p>Partenaires</p>
                 </a>
             </li>
+            <li{% if app.request.attributes.get( '_route' ) starts with 'product_' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('product_index') }}">
+                    <i class="nc-icon nc-credit-card"></i>
+                    <p>Produits</p>
+                </a>
+            </li>
             <li class="divider-bar">
 
             </li>

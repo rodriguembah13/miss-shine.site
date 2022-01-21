@@ -1,0 +1,39 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+<div class="content">
+    <div class="card card-stats">
+        <div class="card-header">
+            <a class="btn btn-dark" href="{{ path('product_new') }}">Ajouter</a>
+        </div>
+        <div class="card-body ">
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ product.price }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ product.image }}</td>
+            </tr>
+            <tr>
+                <th>Stockquantity</th>
+                <td>{{ product.stockquantity }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        </div></div></div>
+{% endblock %}

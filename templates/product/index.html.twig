@@ -1,24 +1,25 @@
 {% extends 'baseback.html.twig' %}
 
-{% block title %}Partenaires{% endblock %}
+{% block title %}Products{% endblock %}
 
 {% block body %}
     <div class="content">
         <div class="card card-stats">
             <div class="card-header">
-                <a class="btn btn-dark" href="{{ path('partenaire_new') }}">Ajouter partenaire</a>
+                <a class="btn btn-dark" href="{{ path('product_new') }}">Ajouter</a>
             </div>
             <div class="card-body ">
-                <div id="partenaires">{{ 'loading'|trans({}, 'messages') }}</div>
+                <div id="products">{{ 'loading'|trans({}, 'messages') }}</div>
             </div>
         </div>
     </div>
+
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script>
         $(document).ready(function () {
-            $('#partenaires').initDataTables({{ datatable_settings(datatable) }});
+            $('#products').initDataTables({{ datatable_settings(datatable) }});
         });
     </script>
 {% endblock %}

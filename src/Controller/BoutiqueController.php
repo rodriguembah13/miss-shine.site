@@ -6,6 +6,7 @@ use App\Repository\CandidatRepository;
 use App\Repository\ConfigurationRepository;
 use App\Repository\EditionRepository;
 use App\Repository\PartenaireRepository;
+use App\Repository\ProductRepository;
 use App\Repository\VoteRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,12 +25,13 @@ class BoutiqueController extends AbstractController
     private $voteRepository;
     private $configRepository;
     private $partenaireRepository;
+    private $productRepository;
 
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(ProductRepository $productRepository,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -38,6 +40,7 @@ class BoutiqueController extends AbstractController
         $this->voteRepository = $voteRepository;
         $this->configRepository = $configRepository;
         $this->partenaireRepository = $partenaireRepository;
+        $this->productRepository=$productRepository;
     }
 
     /**
@@ -46,7 +49,8 @@ class BoutiqueController extends AbstractController
     public function index(): Response
     {
         return $this->render('boutique/index.html.twig', [
-            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true]),
+            'products' => $this->productRepository->findAll()
         ]);
     }
 }

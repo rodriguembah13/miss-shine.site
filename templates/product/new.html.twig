@@ -1,12 +1,14 @@
 {% extends 'baseback.html.twig' %}
 
-{% block title %}Nouvelle Edition{% endblock %}
+{% block title %}Ajouter Product{% endblock %}
 
 {% block body %}
 <div class="content">
     <div class="card card-stats">
+        <div class="card-header">
+        </div>
         <div class="card-body ">
+    {{ include('product/_form.html.twig') }}
 
-    {{ include('edition/_form.html.twig') }}
         </div></div></div>
 {% endblock %}

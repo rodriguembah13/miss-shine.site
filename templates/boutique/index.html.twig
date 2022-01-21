@@ -15,6 +15,28 @@
             </div><!-- /.sec-title -->
         </div>
     </div>
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-3 col-sm-6">
+                <div class="single-shop-product">
+                    <div class="product-upper">
+                        <img src="{{ asset('uploads/products/' ~ product.image) }}">
+                    </div>
+                    <h2><a href="">{{ product.name }}</a></h2>
+                    <div class="product-carousel-price">
+                        <ins>{{ product.price }} FCFA</ins> <del>6000 FCFA</del>
+                    </div>
+
+                    <div class="product-option-shop">
+                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="">J'achete</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div></div></div>
     <div class="brand-carousel-wrapper light-blue-bg  wow fadeIn">
         <div class="container">
             <div class="brand-carousel owl-carousel owl-theme">
