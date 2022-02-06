@@ -6,6 +6,7 @@
         <!-- Basic -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% block meta %}{% endblock %}
         <meta name="description" content="miss entrepreunariat au Cameroun, Miss-shine promeut l'entrepreunariat des jeunes fille et fils du cameroun, Jeunesse camerounaise, reférencement, optimisation, e-commerce,creativite des jeunes au cameroun">
         <meta name="keywords" content="Miss entrepreunariat, Miss cameroun, la plus belle jeune fille entreupreneuse, cameroun,vote miss cameroun,edition 2022">
         <meta name="author" content="Rodrigue mbah">
@@ -16,11 +17,13 @@
             <link rel="stylesheet" href="{{ asset('front/css/animate.min.css') }}">
             <!-- Bootstrap CSS -->
             <link rel="stylesheet" href="{{ asset('front/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('front/css/meanmenu.min.css') }}">
             <!-- Site CSS -->
             <link rel="stylesheet" href="{{ asset('front/css/owl.carousel.min.css') }}">
             <link rel="stylesheet" href="{{ asset('front/css/owl.theme.default.min.css') }}">
             <!-- ALL VERSION CSS -->
             <link rel="stylesheet" href="{{ asset('front/css/default.css') }}">
+
             <!-- ALL VERSION CSS -->
             <link rel="stylesheet" href="{{ asset('front/css/custom.css') }}">
             <!-- ALL VERSION CSS -->
@@ -39,11 +42,11 @@
     {% include '_partials/footer.html.twig' %}
     {% block javascripts %}
         <!-- ALL JS FILES-->
-        <script src="{{ asset('front/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('front/js/new/jquery.min.js') }}"></script>
         <script src="{{ asset('front/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('front/js/popper.min.js') }}"></script>
         <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
-        <script src="{{ asset('front/js/jquery.mobilemenu.js') }}"></script>
+        <script src="{{ asset('front/js/meanmenu.min.js') }}"></script>
         <script src="{{ asset('front/js/jquery.bxslider.min.js') }}"></script>
         <script src="{{ asset('front/js/jquery.backtotop.js') }}"></script>
         <script src="{{ asset('front/js/jquery.bootstrap.wizard.min.js') }}"></script>
@@ -52,7 +55,7 @@
        <script src="{{ asset('front/js/main.js') }}"></script>
         <!-- Load Facebook SDK for JavaScript -->
         <div id="fb-root"></div>
-      {#  <script>(function(d, s, id) {
+        <script>(function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
@@ -60,6 +63,6 @@
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));</script>
         <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=61ea5211aa3f60001954c333&product=inline-follow-buttons" async="async"></script>
-#}    {% endblock %}
+    {% endblock %}
     </body>
 </html>

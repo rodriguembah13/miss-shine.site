@@ -27,14 +27,10 @@
                                                 <p class="h5">Nombre de votes: {{ candidat.vote }}</p>
                                                 <p class="h5 mb-4">{{ candidat.description }}</p>
                                                 <p>
-                                              {#  <div class="fb-share-button"
-                                                     data-href="https://staging.miss-shine.site/show/61e71fa935240-61e71fa935242"
+                                                <div class="fb-share-button"
+                                                     data-href="https://staging.miss-shine.site/show/{{ candidat.genericurl }}"
                                                      data-layout="button_count">
-                                                </div>#}
-                                                    <a type="button" class="btn btn-primary mb-2 py-3 px-4"
-                                                       href="#">
-                                                        Partager le lien
-                                                    </a>
+                                                </div>
                                                     <input value="{{ path('showcandidat', {'url': candidat.genericurl }) }}" hidden>
                                                     <a type="button" class="btn btn-success mb-2 py-3 px-4"
                                                        href="{{ path('showcandidat', {'url': candidat.genericurl }) }}">Je
@@ -95,7 +91,7 @@
         </div>
     </div>
 
-    <div class="wrapper row3">
+    <div class="wrapper row3 mt-30">
 
         <main class="hoc container clear">
             <div class="sectiontitle wow fadeInUp">

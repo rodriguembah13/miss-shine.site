@@ -1,12 +1,12 @@
 {% extends 'baseback.html.twig' %}
 
-{% block title %}Candidat{% endblock %}
+{% block title %}Candidate{% endblock %}
 
 {% block body %}
     <div class="content">
         <div class="card card-stats">
             <div class="card-header">
-                <h5>Information candidat</h5>
+                <h5>Information candidate</h5>
             </div>
             <hr>
             <div class="card-body ">
@@ -19,6 +19,10 @@
                     <tr>
                         <th>Nom</th>
                         <td>{{ candidat.lastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Projet</th>
+                        <td>{{ candidat.projet }}</td>
                     </tr>
                     <tr>
                         <th>Description</th>

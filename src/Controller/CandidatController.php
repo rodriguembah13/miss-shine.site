@@ -65,6 +65,10 @@ class CandidatController extends AbstractController
                 'field' => 'e.lastname',
                 'className'=>"text-center"
             ])
+            ->add('projet', TextColumn::class, [
+                'field' => 'e.projet',
+                'className'=>"text-center"
+            ])
             ->add('nombreVote', TextColumn::class,[
                 'label'=>'dt.columns.nombrevote',
                 'field' => 'e.vote',

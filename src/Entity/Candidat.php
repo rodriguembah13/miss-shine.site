@@ -33,6 +33,10 @@ class Candidat
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $projet;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $photo;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -202,6 +206,24 @@ class Candidat
     public function setPhoto($photo)
     {
         $this->photo = $photo;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjet()
+    {
+        return $this->projet;
+    }
+
+    /**
+     * @param mixed $projet
+     * @return Candidat
+     */
+    public function setProjet($projet)
+    {
+        $this->projet = $projet;
         return $this;
     }
 

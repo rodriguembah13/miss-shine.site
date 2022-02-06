@@ -8,6 +8,7 @@ dt:
     firstname: Prenom
     nombrevotes: Nombre de votes
     website: Site web
+    projet: Projet
     slug: Slug
     parent: Parent
     action: Actions

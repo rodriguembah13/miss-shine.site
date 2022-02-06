@@ -3,7 +3,20 @@
 	"use strict";
 
 	var fullHeight = function() {
+// Mean Menu JS
+		jQuery('.mean-menu').meanmenu({
+			meanScreenWidth: "991"
+		});
 
+		// Header Sticky
+		$(window).on('scroll',function() {
+			if ($(this).scrollTop() > 120){
+				$('.navbar-area').addClass("is-sticky");
+			}
+			else{
+				$('.navbar-area').removeClass("is-sticky");
+			}
+		});
 		$('.js-fullheight').css('height', $(window).height());
 		$(window).resize(function(){
 			$('.js-fullheight').css('height', $(window).height());
@@ -12,13 +25,13 @@
         Fixed menu
         =============================================== */
 
-		$(window).on('scroll', function () {
+	/*	$(window).on('scroll', function () {
 			if ($(window).scrollTop() > 50) {
 				$('.header_style').addClass('fixed-menu');
 			} else {
 				$('.header_style').removeClass('fixed-menu');
 			}
-		});
+		});*/
 	};
 	fullHeight();
 

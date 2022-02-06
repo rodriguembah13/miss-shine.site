@@ -14,6 +14,7 @@ class CandidatType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
+            ->add('projet')
             ->add('description')
             ->add('edition')
         ;

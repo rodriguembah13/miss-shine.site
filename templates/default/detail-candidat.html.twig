@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Miss Shine Entrepreneuriat {% endblock %}
-
+{% block title %}Miss Shine Entrepreneuriat- votez {{ candidat.firstname }}{{ candidat.lastname}} {% endblock %}
+{% block meta %}<meta name="description" content=" Je vote Miss {{ candidat.firstname }}{{ candidat.lastname}}">
+{% endblock %}
 {% block body %}
     <div class="wrapper bgded overlay" style="background-image:url({{ asset('images/imagemiss.jpg') }});">
         <div class="page-title text-center"><h1 class="heading">{{ candidat.firstname }}{{ candidat.lastname}}</h1></div>
@@ -85,13 +86,12 @@
 
                                                     </div>
                                                     <div class="row">
-                                                        <button type="button"
-                                                                class="btn btn-warning waves-effect waves-light mr-2">
-                                                            Partage
-                                                            le lien
-                                                        </button>
+                                                        <div class="fb-share-button"
+                                                             data-href="https://staging.miss-shine.site/show/{{ candidat.genericurl }}"
+                                                             data-layout="button_count">
+                                                        </div>
                                                         <button type="submit"
-                                                                class="btn btn-primary waves-effect waves-light">Je
+                                                                class="btn btn-success waves-effect waves-light">Je
                                                             vote
                                                         </button>
                                                     </div>
@@ -135,13 +135,14 @@
 
 
                                             <div class="row">
-                                                <button type="button"
-                                                        class="btn btn-warning waves-effect waves-light mr-2">
-                                                    Partage le lien
-                                                </button>
                                                 <button type="submit"
-                                                        class="btn btn-primary waves-effect waves-light">Je vote
+                                                        class="btn btn-success waves-effect waves-light">Je vote
                                                 </button>
+                                                <div class="fb-share-button"
+                                                     data-href="https://staging.miss-shine.site/show/{{ candidat.genericurl }}"
+                                                     data-layout="button_count">
+                                                </div>
+
                                             </div>
                                         </form>
 

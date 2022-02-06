@@ -12,6 +12,7 @@ dt:
     parent: Parent
     action: Actions
     adresse: Adresse
+    projet: Projet
     description: Description
     createdat: Date de creation
     idx: N°
