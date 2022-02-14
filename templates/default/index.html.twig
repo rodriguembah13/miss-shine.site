@@ -25,7 +25,8 @@
                                                 <p class="h5">Candidat n°: {{ candidat.id }}</p>
                                                 <h2 class="mb-4">{{ candidat.firstname }} {{ candidat.lastname }}</h2>
                                                 <p class="h5">Nombre de votes: {{ candidat.vote }}</p>
-                                                <p class="h5 mb-4">{{ candidat.description }}</p>
+                                                <p class="h4 mb-4" style="font-weight: bold">{{ candidat.projet }}</p>
+                                                <p class="h5 mb-4">{{ candidat.description|slice(0, 100) ~ '...' }}</p>
                                                 <p>
                                                 <div class="fb-share-button"
                                                      data-href="https://staging.miss-shine.site/show/{{ candidat.genericurl }}"
@@ -91,7 +92,7 @@
         </div>
     </div>
 
-    <div class="wrapper row3 mt-30">
+    <div class="wrapper row3 mt-50">
 
         <main class="hoc container clear">
             <div class="sectiontitle wow fadeInUp">
