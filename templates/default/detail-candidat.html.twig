@@ -35,7 +35,7 @@
                                     <p>Position: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.position }} eme</span></p>
                                 {% endif %}
                                 <p>Nombres de votes: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.vote }}</span></p>
-                                <article>{{ candidat.description }}
+                                <article>{{ candidat.description| slice(0, 300) ~ '...' }}
                                 </article>
                             </div>
                             <hr>
@@ -163,8 +163,22 @@
 
             </div> <!-- tab-content -->
         </div> <!-- end #basicwizard-->
-
+<div class="container">
+    <div class="card" style="">
+        <div class="card-header">
+            <h2 style="font-weight: bold">Description du projet</h2>
+        </div>
+        <div class="card-body">
+        <h3 style="font-weight: bold">Projet: {{ candidat.projet }}</h3>
+            {{ candidat.descriptionprojet }}
+         </div>
+        <div class="card-footer">
+            <a class="btn btn-success" href="#">Faire un don</a>
+        </div>
+    </div>
+</div>
     </section>
+
     <div class="brand-carousel-wrapper light-blue-bg  wow fadeIn">
     <div class="container">
         <div class="brand-carousel owl-carousel owl-theme">

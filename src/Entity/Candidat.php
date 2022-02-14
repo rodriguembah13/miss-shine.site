@@ -27,13 +27,17 @@ class Candidat
      */
     private $lastname;
     /**
-     * @ORM\Column(type="text", length=255)
+     * @ORM\Column(type="text")
      */
     private $description;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $projet;
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $descriptionprojet;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -81,6 +85,24 @@ class Candidat
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescriptionprojet()
+    {
+        return $this->descriptionprojet;
+    }
+
+    /**
+     * @param mixed $descriptionprojet
+     * @return Candidat
+     */
+    public function setDescriptionprojet($descriptionprojet)
+    {
+        $this->descriptionprojet = $descriptionprojet;
+        return $this;
     }
 
     /**

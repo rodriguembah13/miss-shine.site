@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Candidat;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,8 +16,13 @@ class CandidatType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
+            ->add('description',TextareaType::class,[
+                'label'=>"Decription de la candidate"
+            ])
             ->add('projet')
-            ->add('description')
+            ->add('descriptionprojet',TextareaType::class,[
+                'label'=>"Decrivez le projet de la candidate"
+            ])
             ->add('edition')
         ;
     }
