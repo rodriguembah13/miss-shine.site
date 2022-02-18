@@ -21,7 +21,10 @@ class Product
      * @ORM\Column(type="string", length=255)
      */
     private $name;
-
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $slug;
     /**
      * @ORM\Column(type="float", nullable=true)
      */
@@ -51,6 +54,24 @@ class Product
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     * @return Product
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
         return $this;
     }
 

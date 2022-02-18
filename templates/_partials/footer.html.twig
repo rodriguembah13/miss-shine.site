@@ -1,5 +1,57 @@
+<!--  Modal content for the Large example -->
+<div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel">Faire un don</h4>
+                <button type="button" class="fa fa-times" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ path('sendpaiementcinetpaydonation') }}">
+                    <div class="mb-3 col-md-12">
+                        <label class="control-label" for="amount">
+                            Montant (FCFA):</label>
+                        <input required class="form-control" type="number" min="1" name="amount"
+                               id="amount">
+                    </div>
+                    <div class="row">
+                    <div class="col-md-6">
+                        <label class="control-label" for="firstname">
+                            Votre Nom:</label>
+                        <input class="form-control" type="text" name="firstname"
+                               id="firstname">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label" for="lastname">
+                            Votre Prénom:</label>
+                        <input class="form-control" type="text" name="lastname"
+                               id="lastname">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label" for="phone">
+                            Votre Telephone:</label>
+                        <input class="form-control" type="tel"  name="phone"
+                               id="phone">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label" for="lastname">
+                            Votre Adresse mail:</label>
+                        <input class="form-control" type="email" min="1" name="email"
+                               id="email">
+                    </div>
+                    </div>
+                    <br>
+                    <button type="submit"
+                            class="btn btn-success waves-effect waves-light">J'envoie mon don
+                    </button>
+                </form>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="wrapper row4">
-    <footer id="footer" class="hoc clear">
+ <footer id="footer" class="hoc clear">
         <!-- ################################################################################################ -->
         <div class="one_quarter first">
             <h6 class="heading">SERVICES</h6>

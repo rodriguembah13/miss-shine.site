@@ -45,7 +45,7 @@ class ProductController extends AbstractController
                 'className' => 'bg-blue',
                 'field' => 'e.image',
                 'orderable'=>false,
-                'template' => 'partenaire/photo.html.twig',
+                'template' => 'product/photo.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
                 }
@@ -70,7 +70,7 @@ class ProductController extends AbstractController
             ->add('id', TwigColumn::class, [
                 'className' => 'buttons text-center',
                 'label' => 'action',
-                'template' => 'candidat/buttonbar.html.twig',
+                'template' => 'product/buttonbar.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
                 }])
@@ -124,6 +124,13 @@ class ProductController extends AbstractController
                 }
                 $product->setImage($newFilename);
             }
+            if (null == $product->getSlug() || '' == $product->getSlug()) {
+                $slug = str_replace(' ', '_', $product->getName());
+                $product->setSlug($slug);
+            } else {
+                $slug = str_replace(' ', '_', $product->getSlug());
+                $product->setSlug($slug);
+            }
             $entityManager->persist($product);
             $entityManager->flush();
 
@@ -157,8 +164,15 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
+            if (null == $product->getSlug() || '' == $product->getSlug()) {
+                $slug = str_replace(' ', '_', $product->getName());
+                $product->setSlug($slug);
+            } else {
+                $slug = str_replace(' ', '_', $product->getSlug());
+                $product->setSlug($slug);
+            }
+            $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('product_index', [], Response::HTTP_SEE_OTHER);
         }
 

@@ -1,5 +1,9 @@
 <script  type="text/javascript">
-
+$(function () {
+    $('#shopquantity').change(function () {
+        $('#shoptotal').text($(this).val()*$('#initprice').val())
+    })
+})
     $(function () {
         $('#completeinternational').hide();
         $('#completenational').show();

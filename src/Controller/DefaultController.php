@@ -350,6 +350,42 @@ class DefaultController extends AbstractController
         return new JsonResponse($response, 200);
     }
 
+    /**
+     * @Route("/notifyurlproduct/ajax", name="notifyurlproduct", methods={"POST","GET"})
+     */
+    public function notifyurlproduct(Request $request): Response
+    {
+        $this->logger->error("notify call");
+        $site_id = $_POST['cpm_site_id'];
+        $transaction = $_POST['cpm_trans_id'];
+        $base_url = "https://api-checkout.cinetpay.com/v2/payment/check";
+
+        $data = array(
+            'apikey' => $this->params->get('api_key'),
+            'site_id' => $site_id,
+            'transaction_id' => $transaction
+        );
+        $client = new ClientServer();
+        $response = $client->postfinal($base_url, $data);
+        if ($response['data']['status'] == "ACCEPTED") {
+            $array = [
+                "status" => "ACCEPTED"
+            ];
+            return new JsonResponse($array, 200);
+        } elseif ($response['data']['status'] == "REFUSED") {
+            $array = [
+                "status" => "REFUSED"
+            ];
+            return new JsonResponse($array, 200);
+        }else{
+            $array = [
+                "status" => "REFUSED"
+            ];
+            return new JsonResponse($array, 200);
+        }
+
+    }
+
     protected function generateRang()
     {
         $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);
