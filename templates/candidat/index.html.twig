@@ -11,6 +11,9 @@
         <div class="card-body ">
             <div id="candidats">{{ 'loading'|trans({}, 'messages') }}</div>
         </div>
+        <div class="card-footer">
+            <button class="btn btn-dark" id="updatevote">Update vote</button>
+        </div>
     </div>
 </div>
     {% endblock %}
@@ -19,6 +22,37 @@
         <script>
             $(document).ready(function () {
                 $('#candidats').initDataTables({{ datatable_settings(datatable) }});
+                $('#updatevote').click( function() {
+                    jsonObj = [];
+                    $("#dt>tbody input[type=text]").each(function () {
+                        var row = $(this).closest('tr')[0];
+                        var id = row.cells[0].innerText;
+                        var quantity = row.cells[5].children[0].value;
+                        item = {};
+                        item['vote'] = quantity;
+                        item['id'] = id;
+                        jsonObj.push(item)
+                    });
+                    console.log(jsonObj)
+                    $.ajax({
+                        url: "{{ path('updatevoteajax') }}",
+                        type: "POST",
+                        dataType: "JSON",
+                        data: JSON.stringify({ob: jsonObj}),
+                        success: function (data) {
+                            window.location.reload();
+                            setTimeout(function () {
+                                $("#overlay").fadeOut(300);
+                            }, 500);
+
+                        },
+                        error: function (err) {
+                            setTimeout(function () {
+                                $("#overlay").fadeOut(300);
+                            }, 500);
+                        }
+                    });
+                } );
             });
         </script>
     {% endblock %}

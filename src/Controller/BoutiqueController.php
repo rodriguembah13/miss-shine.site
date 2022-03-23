@@ -114,7 +114,6 @@ class BoutiqueController extends AbstractController
             'apikey' => $this->params->get('api_key'),
             'notify_url' => $notify_url,
             'channels' => 'ALL',
-
             'customer_id' => "",
             "customer_name" => $firstname,
             "customer_surname" => $lastname,

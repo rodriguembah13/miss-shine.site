@@ -69,11 +69,18 @@ class CandidatController extends AbstractController
                 'field' => 'e.projet',
                 'className'=>"text-center"
             ])
-            ->add('nombreVote', TextColumn::class,[
+            /*->add('nombreVote', TextColumn::class,[
                 'label'=>'dt.columns.nombrevote',
                 'field' => 'e.vote',
                 'className'=>"text-center"
-            ])
+            ])*/
+            ->add('nombreVote', TwigColumn::class,[
+                'label'=>'dt.columns.nombrevote',
+                'field' => 'e.vote',
+                'template' => 'candidat/voteinput.html.twig',
+                'render' => function ($value, $context) {
+                    return $value;
+                }])
 /*            ->add('monaie', TextColumn::class)*/
             ->add('position', TextColumn::class, [
                 'className'=>"text-center",
@@ -291,4 +298,24 @@ $this->generateRang();
 
         return new JsonResponse($data, 200);
     }
+    /**
+     * @Route("/updatevote/ajax", name="updatevoteajax", methods={"POST"})
+     */
+    public function updateferrure(Request $request): JsonResponse
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $data = json_decode($request->getContent(), true);
+        $ob = $data['ob'];
+        $array = [];
+        $partants=[];
+        for ($i = 0; $i < sizeof($ob); ++$i) {
+            $product = $this->candidatRepository->find($ob[$i]['id']);
+            $product->setVote($ob[$i]['vote']);
+        }
+        $this->generateRang();
+        $em->flush();
+        return new JsonResponse($array, Response::HTTP_OK);
+    }
+
 }
