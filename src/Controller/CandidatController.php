@@ -124,6 +124,7 @@ class CandidatController extends AbstractController
     protected function generateRang(){
         $edition=$this->editionRepository->findOneBy(['status'=>'Publie']);
         $candidats=$this->candidatRepository->findByEdition($edition);
+        $entityManager = $this->getDoctrine()->getManager();
         foreach ($candidats as $candidat){
             $j = 0;
             for ($i = 0; $i < sizeof($candidats); $i++) {
@@ -133,6 +134,7 @@ class CandidatController extends AbstractController
             }
             $candidat->setPosition($j);
         }
+        $entityManager->flush();
     }
     protected function getRangVoting(Candidat $candidat)
     {
@@ -314,7 +316,7 @@ $this->generateRang();
             $product->setVote($ob[$i]['vote']);
         }
       
-        $em->flush(); $this->generateRang();
+        $em->flush();  $this->generateRang();
         return new JsonResponse($array, Response::HTTP_OK);
     }
 
