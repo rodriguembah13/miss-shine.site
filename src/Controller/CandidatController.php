@@ -313,8 +313,8 @@ $this->generateRang();
             $product = $this->candidatRepository->find($ob[$i]['id']);
             $product->setVote($ob[$i]['vote']);
         }
-        $this->generateRang();
-        $em->flush();
+      
+        $em->flush(); $this->generateRang();
         return new JsonResponse($array, Response::HTTP_OK);
     }
 
