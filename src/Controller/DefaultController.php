@@ -545,6 +545,7 @@ class DefaultController extends AbstractController
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
+            $this->logger->info($url);
             $link_array = explode('/', $url);
             return $this->redirect($url);
         }
