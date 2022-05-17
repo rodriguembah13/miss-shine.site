@@ -320,7 +320,6 @@ class DefaultController extends AbstractController
     public function returnurl(Request $request): Response
     {
 
-
     }
 
     /**
@@ -386,6 +385,39 @@ class DefaultController extends AbstractController
 
     }
 
+    /**
+     * @Route("/notifyurlpaymoo/ajax", name="notifyurlpaymooajax", methods={"POST","GET"})
+     */
+    public function notifyurlpaymoo(Request $request): Response
+    {
+        $this->logger->error("notify call");
+        if (isset($_POST['status'])) {
+            $status = $_POST['status'];
+        }
+
+        $vote_ = $this->voteRepository->find($_GET['vote']);
+        if ($vote_->getStatus() == "PENDING") {
+
+            if ($status == "Success") {
+                $this->updateVote($vote_, 'ACCEPTED');
+            } elseif ($status == "REFUSED") {
+                $this->updateVote($vote_, 'REFUSED');
+            }
+        }
+        return new JsonResponse($status, 200);
+    }
+    /**
+     * @Route("/notifyurlproductpaymoo/ajax", name="notifyurlproductpaymoo", methods={"POST","GET"})
+     */
+    public function notifyurlproductpaymoo(Request $request): Response
+    {
+        $this->logger->error("notify call");
+        if (isset($_POST['status'])) {
+            $status = $_POST['status'];
+        }
+
+        return new JsonResponse($status, 200);
+    }
     protected function generateRang()
     {
         $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);
@@ -408,8 +440,9 @@ class DefaultController extends AbstractController
     {
         $candidat_id = $request->get("candidat_id");
         $candidat = $this->candidatRepository->find($candidat_id);
-        $client_phone = $request->get("clientphone");
         $client_votes = $request->get("clientvote");
+        $client_phone = $request->get("clientphone");
+        $client_email = $request->get("clientemail");
         $this->logger->log(200, $request->get("clientphone"));
         $this->logger->info($request->get("clientvote"));
         $current_url = "";
@@ -419,29 +452,29 @@ class DefaultController extends AbstractController
             $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
         }
         $reference = $transaction_id;
-        $product = $candidat->getFirstname() . " " . $candidat->getLastname();
-        //  $_SESSION['VOTING_ID'] = $id;
-        // $_SESSION['VOTING_REFERENCE'] = $reference;
-        $SUCCESS_CALLBACK_URL = 'wc_payment_success';
-        $FAILURE_CALLBACK_URL = 'wc_payment_failure';
+        $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
+        $amount = $this->getAmount($client_votes);
+        $notify_url = $this->generateUrl('notifyurlpaymooajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
+        $key=$this->params->get('paymookey');
+        $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
-            'amount' => 100,
+            'amount' => $amount,
             'currency_code' => 'XAF',
             'ccode' => 'CM',
             'lang' => 'en',
             'item_ref' => $reference,
             'item_name' => $product,
             'description' => 'Voting session',
-            'email' => 'exemple@email.com',
-            'phone' => '+237675066919',
+            'email' => $client_email,
+            'phone' => $client_phone,
             'first_name' => 'Name',
-            'last_name' => 'Surname',
-            'public_key' => 'PK_1muq3V1baPup9s1JAk6f',
+            'last_name' => $candidat->getLastname(),
+            'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
             'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
             //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
-            'callbackUrl' => $current_url . '//wc-api/' . $SUCCESS_CALLBACK_URL . $reference,
-            'callbackOnFailureUrl' => $current_url . '//wc-api/' . $FAILURE_CALLBACK_URL . $reference,
+            'callbackUrl' => $notify_url,
+            'callbackOnFailureUrl' => $notify_url,
             'redirectTarget' => 'TOP',
             'merchantCustomerId' => $reference,
             'environement' => 'test',
@@ -459,7 +492,65 @@ class DefaultController extends AbstractController
 
         //return new JsonResponse($data, 200);
     }
+    /**
+     * @Route("/sendpaiementinternational/ajax", name="sendpaiementinternationalajax", methods={"POST"})
+     */
+    public function sendpaiementinternational(Request $request): Response
+    {
+        $candidat_id = $request->get("candidat_id");
+        $candidat = $this->candidatRepository->find($candidat_id);
+        $client_votes = $request->get("clientintvote");
+        $client_phone = $request->get("clientphone");
+        $client_email = $request->get("clientemail");
+        $this->logger->log(200, $request->get("clientphone"));
+        $this->logger->info($request->get("clientvote"));
+        $current_url = $this->params->get('domain');
+        $transaction_id = "";
+        $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+        for ($i = 1; $i <= 12; ++$i) {
+            $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
+        }
+        $reference = $transaction_id;
+        $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
+        $amount = $this->getAmountInternational($client_votes);
+        $notify_url = $this->generateUrl('notifyurlpaymooajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
+        $key=$this->params->get('paymookey');
+        $notify_url = $this->params->get('domain') . $notify_url;
+        $data = [
+            'amount' => $amount,
+            'currency_code' => 'USD',
+            'ccode' => 'CM',
+            'lang' => 'en',
+            'item_ref' => $reference,
+            'item_name' => $product,
+            'description' => 'Voting session',
+            'email' => $client_email,
+            'phone' => $client_phone,
+            'first_name' => 'Name',
+            'last_name' => $candidat->getLastname(),
+            'public_key' => $key,
+            'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
+            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
+            'callbackUrl' => $notify_url,
+            'callbackOnFailureUrl' => $notify_url,
+            'redirectTarget' => 'TOP',
+            'merchantCustomerId' => $reference,
+            'environement' => 'test',
+        ];
+        $client = new ClientServer();
+        $response = $client->post("payment_url", $data);
+        $this->logger->info($response['response']);
+        if ($response['response'] == "success") {
+            $url = $response["payment_url"];
+            $link_array = explode('/', $url);
+            return $this->redirect($link_array);
+        }
 
+        return $this->redirectToRoute("home");
+
+        //return new JsonResponse($data, 200);
+    }
     protected function getRangVoting(Candidat $candidat)
     {
         $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);

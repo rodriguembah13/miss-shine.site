@@ -201,4 +201,124 @@ class BoutiqueController extends AbstractController
              //'candidat' => $candidat,
          ]);*/
     }
+    /**
+     * @Route("/sendpaiementpaydonation/ajax", name="sendpaiementpaydonationajax", methods={"POST"})
+     */
+    public function sendpaiementpaydonation(Request $request): Response
+    {
+        $initprice = $request->get("amount");
+        $firstname = $request->get("firstname");
+        $lastname = $request->get("lastname");
+        $email = $request->get("email");
+        $phone = $request->get("phone");
+        $currency = $request->get("currency");
+        $this->logger->log(200, $request->get("clientphone"));
+        $this->logger->info($request->get("clientvote"));
+        $current_url = $this->params->get('domain');
+        $transaction_id = "";
+        $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+        for ($i = 1; $i <= 12; ++$i) {
+            $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
+        }
+        $reference = $transaction_id;
+        $product = "vote miss-shinne : donnation";
+
+        $notify_url = $this->generateUrl('notifyurlproductpaymoo', []);
+        $notify_url = $this->params->get('domain') . $notify_url;
+        $key=$this->params->get('paymookey');
+        $data = [
+            'amount' => $initprice,
+            'currency_code' => $currency,
+            'ccode' => 'CM',
+            'lang' => 'en',
+            'item_ref' => $reference,
+            'item_name' => $product,
+            'description' => 'Voting session',
+            'email' => $email,
+            'phone' => $phone,
+            'first_name' => $firstname,
+            'last_name' => $lastname,
+            'public_key' => $key,
+            'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
+            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
+            'callbackUrl' => $notify_url,
+            'callbackOnFailureUrl' => $notify_url,
+            'redirectTarget' => 'TOP',
+            'merchantCustomerId' => $reference,
+            'environement' => 'test',
+        ];
+        $client = new ClientServer();
+        $response = $client->post("payment_url", $data);
+        $this->logger->info($response['response']);
+        if ($response['response'] == "success") {
+            $url = $response["payment_url"];
+            $link_array = explode('/', $url);
+            return $this->redirect($link_array);
+        }
+
+        return $this->redirectToRoute("home");
+    }
+
+    /**
+     * @Route("/sendpaiementpayproduct/ajax", name="sendpaiementpayproductjax", methods={"POST"})
+     */
+    public function sendpaiementpayproduct(Request $request): Response
+    {
+        $initprice = $request->get("initprice");
+        $slug = $request->get("slug");
+        $firstname = $request->get("firstname");
+        $lastname = $request->get("lastname");
+        $email = $request->get("email");
+        $phone = $request->get("phone");
+        $quantity = $request->get("shopquantity");
+        $name = $request->get("shopname");
+        $currency = $request->get("currency");
+        $this->logger->log(200, $request->get("clientphone"));
+        $this->logger->info($request->get("clientvote"));
+        $current_url = $this->params->get('domain');
+        $transaction_id = "";
+        $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+        for ($i = 1; $i <= 12; ++$i) {
+            $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
+        }
+        $reference = $transaction_id;
+        $product = $name;
+
+        $notify_url = $this->generateUrl('notifyurlproductpaymoo', []);
+        $key=$this->params->get('paymookey');
+        $notify_url = $this->params->get('domain') . $notify_url;
+        $data = [
+            'amount' => $initprice,
+            'currency_code' => $currency,
+            'ccode' => 'CM',
+            'lang' => 'en',
+            'item_ref' => $reference,
+            'item_name' => $product,
+            'description' => 'Voting session',
+            'email' => $email,
+            'phone' => $phone,
+            'first_name' => $firstname,
+            'last_name' => $lastname,
+            'public_key' => $key,
+            'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
+            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
+            'callbackUrl' => $notify_url,
+            'callbackOnFailureUrl' => $notify_url,
+            'redirectTarget' => 'TOP',
+            'merchantCustomerId' => $reference,
+            'environement' => 'test',
+        ];
+        $client = new ClientServer();
+        $response = $client->post("payment_url", $data);
+        $this->logger->info($response['response']);
+        if ($response['response'] == "success") {
+            $url = $response["payment_url"];
+            $link_array = explode('/', $url);
+            return $this->redirect($link_array);
+        }
+
+        return $this->redirectToRoute("home");
+    }
 }

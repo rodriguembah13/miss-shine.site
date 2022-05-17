@@ -7,7 +7,17 @@
                 <button type="button" class="fa fa-times" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{ path('sendpaiementcinetpaydonation') }}">
+                <form method="post" action="{{ path('sendpaiementpaydonationajax') }}">
+                    <div class="mb-3 col-md-12">
+                        <label class="control-label" for="amount">
+                            Devise</label>
+                        <select class="form-control" name="currency" id="currency">
+                            <option>Choisir la monnaie</option>
+                            <option value="EUR">Euro ()</option>
+                            <option value="USD">Dollar($)</option>
+                            <option value="XAF">FCFA(XAF)</option>
+                        </select>
+                    </div>
                     <div class="mb-3 col-md-12">
                         <label class="control-label" for="amount">
                             Montant (FCFA):</label>

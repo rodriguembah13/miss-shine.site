@@ -62,7 +62,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <form id="msform" method="post" name="nationalpay"
-                                                      action="{{ path('sendpaiementcinetpay') }}">
+                                                      action="{{ path('sendpaiementajax') }}">
                                                     <input name="candidatid" class="hidden"
                                                            value="{{ candidat.id }}">
                                                     <div class="row">
@@ -104,7 +104,7 @@
                                     <div class="tab-pane" id="basictab2">
 
                                         <form id="msforminternational" method="post" name="msforminternational"
-                                              action="{{ path('sendpaiementcinetpayinternational') }}">
+                                              action="{{ path('sendpaiementinternationalajax') }}">
                                             <input name="candidatid" class="hidden" id="candidat_id"
                                                    value="{{ candidat.id }}">
                                             <div class="row">

@@ -29,29 +29,30 @@ class CandidatController extends AbstractController
     private $candidatRepository;
     private $editionRepository;
     private $dataTableFactory;
+
     /**
      * @param $candidatRepository
      */
-    public function __construct(EditionRepository $editionRepository,DataTableFactory $dataTableFactory,CandidatRepository $candidatRepository)
+    public function __construct(EditionRepository $editionRepository, DataTableFactory $dataTableFactory, CandidatRepository $candidatRepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->dataTableFactory = $dataTableFactory;
-        $this->editionRepository=$editionRepository;
+        $this->editionRepository = $editionRepository;
     }
 
     /**
      * @Route("/", name="candidat_index", methods={"GET","POST"})
      */
-    public function index(Request $request,CandidatRepository $candidatRepository): Response
+    public function index(Request $request, CandidatRepository $candidatRepository): Response
     {
         $table = $this->dataTableFactory->create()
-            ->add('idx', TextColumn::class,[
+            ->add('idx', TextColumn::class, [
                 'field' => 'e.id',
-                'className'=>"text-center"
+                'className' => "text-center"
             ])
             ->add('photo', TwigColumn::class, [
                 'className' => 'bold',
-                'orderable'=>false,
+                'orderable' => false,
                 'template' => 'candidat/photo.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
@@ -59,42 +60,41 @@ class CandidatController extends AbstractController
             ])
             ->add('firstname', TextColumn::class, [
                 'field' => 'e.firstname',
-                'className'=>"text-center"
+                'className' => "text-center"
             ])
             ->add('lastname', TextColumn::class, [
                 'field' => 'e.lastname',
-                'className'=>"text-center"
+                'className' => "text-center"
             ])
             ->add('projet', TextColumn::class, [
                 'field' => 'e.projet',
-                'className'=>"text-center"
+                'className' => "text-center"
             ])
             /*->add('nombreVote', TextColumn::class,[
                 'label'=>'dt.columns.nombrevote',
                 'field' => 'e.vote',
                 'className'=>"text-center"
             ])*/
-            ->add('nombreVote', TwigColumn::class,[
-                'label'=>'dt.columns.nombrevote',
+            ->add('nombreVote', TwigColumn::class, [
+                'label' => 'dt.columns.nombrevote',
                 'field' => 'e.vote',
                 'template' => 'candidat/voteinput.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
                 }])
-/*            ->add('monaie', TextColumn::class)*/
+            /*            ->add('monaie', TextColumn::class)*/
             ->add('position', TextColumn::class, [
-                'className'=>"text-center",
-               'label'=>'dt.columns.position',
+                'className' => "text-center",
+                'label' => 'dt.columns.position',
 
             ])
-            ->add('createdAt',  DateTimeColumn::class, [
+            ->add('createdAt', DateTimeColumn::class, [
                 'format' => 'd-m-Y',
-                'className'=>"text-center",
+                'className' => "text-center",
                 'orderable' => false,
                 'searchable' => false,
-                'label'=>'dt.columns.createdat'
+                'label' => 'dt.columns.createdat'
             ])
-
             ->add('id', TwigColumn::class, [
                 'className' => 'buttons text-center',
                 'label' => 'action',
@@ -108,24 +108,25 @@ class CandidatController extends AbstractController
                     $builder
                         ->select('e')
                         ->from(Candidat::class, 'e')
-                        ->orderBy("e.position","ASC")
-                    ;
+                        ->orderBy("e.position", "ASC");
                 },
             ])->handleRequest($request);
         if ($table->isCallback()) {
             return $table->getResponse();
         }
         return $this->render('candidat/index.html.twig', [
-           // 'candidats' => $candidatRepository->findAll(),
-            'title'=>"Candidats",
+            // 'candidats' => $candidatRepository->findAll(),
+            'title' => "Candidats",
             'datatable' => $table
         ]);
     }
-    protected function generateRang(){
-        $edition=$this->editionRepository->findOneBy(['status'=>'Publie']);
-        $candidats=$this->candidatRepository->findByEdition($edition);
+
+    protected function generateRang()
+    {
+        $edition = $this->editionRepository->findOneBy(['status' => 'Publie']);
+        $candidats = $this->candidatRepository->findByEdition($edition);
         $entityManager = $this->getDoctrine()->getManager();
-        foreach ($candidats as $candidat){
+        foreach ($candidats as $candidat) {
             $j = 0;
             for ($i = 0; $i < sizeof($candidats); $i++) {
                 if ($candidat->getVote() === $candidats[$i]->getVote()) {
@@ -136,10 +137,11 @@ class CandidatController extends AbstractController
         }
         $entityManager->flush();
     }
+
     protected function getRangVoting(Candidat $candidat)
     {
-        $edition=$this->editionRepository->findOneBy(['status'=>'Publie']);
-        $candidats=$this->candidatRepository->findByEdition($edition);
+        $edition = $this->editionRepository->findOneBy(['status' => 'Publie']);
+        $candidats = $this->candidatRepository->findByEdition($edition);
 
         $j = 0;
         for ($i = 0; $i < sizeof($candidats); $i++) {
@@ -149,6 +151,7 @@ class CandidatController extends AbstractController
         }
         return $j;
     }
+
     /**
      * @Route("/new", name="candidat_new", methods={"GET","POST"})
      */
@@ -156,10 +159,10 @@ class CandidatController extends AbstractController
     {
         $candidat = new Candidat();
         $form = $this->createForm(CandidatType::class, $candidat)
-            ->add('imageFilename',FileType::class,[
-                'mapped'=>false,
-                'required'=>true,
-                'label'=>'Photo'
+            ->add('imageFilename', FileType::class, [
+                'mapped' => false,
+                'required' => true,
+                'label' => 'Photo'
             ]);
         $form->handleRequest($request);
 
@@ -167,9 +170,9 @@ class CandidatController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $imageFilename = $form['imageFilename']->getData();
             if ($imageFilename) {
-                $destination = $this->getParameter('kernel.project_dir').'/public/uploads';
+                $destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
                 $originalFilename = pathinfo($imageFilename->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFilename->guessExtension();
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFilename->guessExtension();
 
                 try {
                     $imageFilename->move(
@@ -180,7 +183,7 @@ class CandidatController extends AbstractController
                 }
                 $candidat->setPhoto($newFilename);
             }
-            $url=uniqid()."-".uniqid();
+            $url = uniqid() . "-" . uniqid();
             $candidat->setGenericurl($url);
             $candidat->setVote(0);
             $entityManager->persist($candidat);
@@ -193,7 +196,7 @@ class CandidatController extends AbstractController
         return $this->render('candidat/new.html.twig', [
             'candidat' => $candidat,
             'form' => $form->createView(),
-            'title'=>"Ajouter une candidate"
+            'title' => "Ajouter une candidate"
         ]);
     }
 
@@ -204,7 +207,7 @@ class CandidatController extends AbstractController
     {
         return $this->render('candidat/show.html.twig', [
             'candidat' => $candidat,
-            'title'=>"editer une candidate"
+            'title' => "editer une candidate"
         ]);
     }
 
@@ -214,19 +217,19 @@ class CandidatController extends AbstractController
     public function edit(Request $request, Candidat $candidat): Response
     {
         $form = $this->createForm(CandidatType::class, $candidat)
-            ->add('imageFilename',FileType::class,[
-                'mapped'=>false,
-                'required'=>false,
-                'label'=>'Photo'
+            ->add('imageFilename', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Photo'
             ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFilename = $form['imageFilename']->getData();
             if ($imageFilename) {
-                $destination = $this->getParameter('kernel.project_dir').'/public/uploads';
+                $destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
                 $originalFilename = pathinfo($imageFilename->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFilename->guessExtension();
+                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFilename->guessExtension();
 
                 try {
                     $imageFilename->move(
@@ -237,12 +240,12 @@ class CandidatController extends AbstractController
                 }
                 $candidat->setPhoto($newFilename);
             }
-            $url=uniqid()."-".uniqid();
-            if ($candidat->getGenericurl()==null){
+            $url = uniqid() . "-" . uniqid();
+            if ($candidat->getGenericurl() == null) {
                 $candidat->setGenericurl($url);
             }
-           // $candidat->setPosition($this->getRangVoting($candidat));
-$this->generateRang();
+            // $candidat->setPosition($this->getRangVoting($candidat));
+            $this->generateRang();
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('candidat_index');
@@ -251,7 +254,7 @@ $this->generateRang();
         return $this->render('candidat/edit.html.twig', [
             'candidat' => $candidat,
             'form' => $form->createView(),
-            'title'=>"editer une candidate"
+            'title' => "editer une candidate"
         ]);
     }
 
@@ -260,7 +263,7 @@ $this->generateRang();
      */
     public function delete(Request $request, Candidat $candidat): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$candidat->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $candidat->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($candidat);
             $entityManager->flush();
@@ -268,6 +271,7 @@ $this->generateRang();
 
         return $this->redirectToRoute('candidat_index');
     }
+
     /**
      * @Route("/delete/ajax", name="candidat_delete_ajax", methods={"GET"})
      */
@@ -280,26 +284,28 @@ $this->generateRang();
             $entityManager->flush();
             $this->addFlash('success', 'operation effectue avec success');
         } catch (\Exception $exception) {
-            $this->addFlash('error', 'operation impossible'.$exception->getMessage());
+            $this->addFlash('error', 'operation impossible' . $exception->getMessage());
         }
 
         return new JsonResponse('success', 200);
     }
+
     /**
      * @Route("/getcandidat/ajax", name="getcandidat_ajax", methods={"GET"})
      */
     public function getcandidatAjax(Request $request): JsonResponse
     {
         $candidat = $this->candidatRepository->find($request->get('item_id'));
-        $data=[
-           'id'=> $candidat->getId(),
-            'firstname'=>$candidat->getFirstname(),
-            'lastname'=>$candidat->getLastname(),
-            'photo'=>$candidat->getPhoto(),
+        $data = [
+            'id' => $candidat->getId(),
+            'firstname' => $candidat->getFirstname(),
+            'lastname' => $candidat->getLastname(),
+            'photo' => $candidat->getPhoto(),
         ];
 
         return new JsonResponse($data, 200);
     }
+
     /**
      * @Route("/updatevote/ajax", name="updatevoteajax", methods={"POST"})
      */
@@ -310,13 +316,14 @@ $this->generateRang();
         $data = json_decode($request->getContent(), true);
         $ob = $data['ob'];
         $array = [];
-        $partants=[];
+        $partants = [];
         for ($i = 0; $i < sizeof($ob); ++$i) {
             $product = $this->candidatRepository->find($ob[$i]['id']);
             $product->setVote($ob[$i]['vote']);
         }
-      
-        $em->flush();  $this->generateRang();
+
+        $em->flush();
+        $this->generateRang();
         return new JsonResponse($array, Response::HTTP_OK);
     }
 
