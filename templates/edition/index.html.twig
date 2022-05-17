@@ -30,7 +30,7 @@
                 <td>{{ edition.createdAt ? edition.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ edition.updatedAt ? edition.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td><div class="btn-group btn-group-sm">
-                    <a class="btn btn-success" href="{{ path('edition_show', {'id': edition.id}) }}">show</a>
+                    <a class="btn btn-success" href="{{ path('edition_edit', {'id': edition.id}) }}">show</a>
                     <a class="btn btn-primary" href="{{ path('edition_edit', {'id': edition.id}) }}">edit</a>
                     </div>
                 </td>

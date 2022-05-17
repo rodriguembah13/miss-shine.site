@@ -36,8 +36,12 @@ class DashboardController extends AbstractController
     public function index(): Response
     {
         $votes=$this->voteRepository->findBy(['status'=>"ACCEPTED"]);
+        $edition=$this->editionRepository->findOneBy(['status'=>'Publie']);
+        $candidats=$this->candidatRepository->findByEdition($edition);
         return $this->render('dashboard/index.html.twig', [
-            'controller_name' => 'DashboardController',
+            'votes' => sizeof($votes),
+            'candidats'=>sizeof($candidats),
+            'edition'=>$edition->getId(),
             'title'=>"Dashboard"
         ]);
     }
