@@ -8,6 +8,7 @@ use App\Repository\EditionRepository;
 use App\Repository\PartenaireRepository;
 use App\Repository\ProductRepository;
 use App\Repository\VoteRepository;
+use App\Utils\ClientPaymoo;
 use App\Utils\ClientServer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -248,13 +249,13 @@ class BoutiqueController extends AbstractController
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];
-        $client = new ClientServer();
-        $response = $client->post("payment_url", $data);
+        $client = new ClientPaymoo();
+        $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
             $link_array = explode('/', $url);
-            return $this->redirect($link_array);
+            return $this->redirect($url);
         }
 
         return $this->redirectToRoute("home");
@@ -310,13 +311,13 @@ class BoutiqueController extends AbstractController
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];
-        $client = new ClientServer();
-        $response = $client->post("payment_url", $data);
+        $client = new ClientPaymoo();
+        $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
             $link_array = explode('/', $url);
-            return $this->redirect($link_array);
+            return $this->redirect($url);
         }
 
         return $this->redirectToRoute("home");

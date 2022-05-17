@@ -9,6 +9,7 @@ use App\Repository\ConfigurationRepository;
 use App\Repository\EditionRepository;
 use App\Repository\PartenaireRepository;
 use App\Repository\VoteRepository;
+use App\Utils\ClientPaymoo;
 use App\Utils\ClientServer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -438,7 +439,7 @@ class DefaultController extends AbstractController
      */
     public function sendpaiement(Request $request): Response
     {
-        $candidat_id = $request->get("candidat_id");
+        $candidat_id = $request->get("candidatid");
         $candidat = $this->candidatRepository->find($candidat_id);
         $client_votes = $request->get("clientvote");
         $client_phone = $request->get("clientphone");
@@ -479,13 +480,14 @@ class DefaultController extends AbstractController
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];
-        $client = new ClientServer();
-        $response = $client->post("payment_url", $data);
+        $client = new ClientPaymoo();
+        $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
+            $this->logger->info($url);
             $link_array = explode('/', $url);
-            return $this->redirect($link_array);
+            return $this->redirect($url);
         }
 
         return $this->redirectToRoute("home");
@@ -497,7 +499,7 @@ class DefaultController extends AbstractController
      */
     public function sendpaiementinternational(Request $request): Response
     {
-        $candidat_id = $request->get("candidat_id");
+        $candidat_id = $request->get("candidatid");
         $candidat = $this->candidatRepository->find($candidat_id);
         $client_votes = $request->get("clientintvote");
         $client_phone = $request->get("clientphone");
@@ -538,13 +540,13 @@ class DefaultController extends AbstractController
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];
-        $client = new ClientServer();
-        $response = $client->post("payment_url", $data);
+        $client = new ClientPaymoo();
+        $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
             $link_array = explode('/', $url);
-            return $this->redirect($link_array);
+            return $this->redirect($url);
         }
 
         return $this->redirectToRoute("home");
