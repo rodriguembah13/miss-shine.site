@@ -45,6 +45,10 @@ class Candidat
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $dossard;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $position;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -85,6 +89,24 @@ class Candidat
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDossard()
+    {
+        return $this->dossard;
+    }
+
+    /**
+     * @param mixed $dossard
+     * @return Candidat
+     */
+    public function setDossard($dossard)
+    {
+        $this->dossard = $dossard;
+        return $this;
     }
 
     /**

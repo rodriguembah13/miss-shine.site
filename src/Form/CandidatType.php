@@ -16,6 +16,7 @@ class CandidatType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
+            ->add('dossard')
             ->add('description',TextareaType::class,[
                 'label'=>"Decription de la candidate"
             ])

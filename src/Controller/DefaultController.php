@@ -468,7 +468,7 @@ class DefaultController extends AbstractController
             'description' => 'Voting session',
             'email' => $client_email,
             'phone' => $client_phone,
-            'first_name' => 'Name',
+            'first_name' => 'Dossard'.$candidat->getDossard(),
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
@@ -528,7 +528,7 @@ class DefaultController extends AbstractController
             'description' => 'Voting session',
             'email' => $client_email,
             'phone' => $client_phone,
-            'first_name' => 'Name',
+            'first_name' => 'Dossard'.$candidat->getDossard(),
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
@@ -542,7 +542,7 @@ class DefaultController extends AbstractController
         ];
         $client = new ClientPaymoo();
         $response = $client->postfinal("payment_url", $data);
-        $this->logger->info($response['response']);
+        $this->logger->info($notify_url);
         if ($response['response'] == "success") {
             $url = $response["payment_url"];
             $this->logger->info($url);

@@ -3,6 +3,7 @@ table:
 dt:
   columns:
     candidat: Candidat
+    dossard: N° Dossard
     designation: Désignation
     lastname: Nom
     firstname: Prenom

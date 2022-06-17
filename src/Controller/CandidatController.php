@@ -70,11 +70,11 @@ class CandidatController extends AbstractController
                 'field' => 'e.projet',
                 'className' => "text-center"
             ])
-            /*->add('nombreVote', TextColumn::class,[
-                'label'=>'dt.columns.nombrevote',
-                'field' => 'e.vote',
+          ->add('dossard', TextColumn::class,[
+                'label'=>'dt.columns.dossard',
+                'field' => 'e.dossard',
                 'className'=>"text-center"
-            ])*/
+            ])
             ->add('nombreVote', TwigColumn::class, [
                 'label' => 'dt.columns.nombrevote',
                 'field' => 'e.vote',

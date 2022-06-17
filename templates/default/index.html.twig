@@ -22,7 +22,7 @@
                                         {% endif %}
                                         <div class="text text-left text-lg-right p-4 px-xl-5 d-flex align-items-center">
                                             <div class="desc w-100">
-                                                <p class="h5">Candidat n°: {{ candidat.id }}</p>
+                                                <p class="h5">Candidat(e) n°: {{ candidat.dossard }}</p>
                                                 <h2 class="mb-4">{{ candidat.firstname }} {{ candidat.lastname }}</h2>
                                                 <p class="h5">Nombre de votes: {{ candidat.vote }}</p>
                                                 <p class="h4 mb-4" style="font-weight: bold">{{ candidat.projet }}</p>
@@ -134,6 +134,7 @@
                                             {% else %}
                                                 <span>{{ candidat.position }} éme</span>
                                             {% endif %}
+                                            <p class="h4">Candidat(e) n°: {{ candidat.dossard }}</p>
                                             <h4>{{ candidat.firstname }} {{ candidat.lastname }}</h4>
                                             <span>Nombres de votes: {{ candidat.vote }}</span>
                                             <p>{{ candidat.description }} </p>

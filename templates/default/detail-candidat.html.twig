@@ -34,6 +34,7 @@
                                 {% else %}
                                     <p>Position: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.position }} eme</span></p>
                                 {% endif %}
+                                <h4>Candidat(e) n°: {{ candidat.dossard }}</h4>
                                 <p>Nombres de votes: <span style="color: #721c24;font-weight: 400;font-size: 18px">{{ candidat.vote }}</span></p>
                                 <article>{{ candidat.description| slice(0, 300) ~ '...' }}
                                 </article>
