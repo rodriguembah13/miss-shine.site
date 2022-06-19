@@ -310,7 +310,6 @@ class DefaultController extends AbstractController
             $candidat = $vote->getCandidat();
             $candidat->setVote($candidat->getVote() + $vote->getNombreVote());
             $this->generateRang();
-            //$candidat->setPosition($this->getRangVoting($candidat));
         } else {
             $vote->setStatus($status);
         }
@@ -426,7 +425,6 @@ class DefaultController extends AbstractController
             $status = $request->get('status');
             $vote_ = $this->voteRepository->find($request->get('vote'));
             if ($vote_->getStatus() == "PENDING") {
-
                 if ($status == "successful") {
                     $this->updateVote($vote_, 'ACCEPTED');
                 } elseif ($status == "cancelled") {
@@ -436,7 +434,7 @@ class DefaultController extends AbstractController
         }else{
             $status = $request->get('status');
         }
-
+$this->generateRang();
         return $this->redirectToRoute('home');
     }
     /**
@@ -455,6 +453,7 @@ class DefaultController extends AbstractController
     }
     protected function generateRang()
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);
         $candidats = $this->candidatRepository->findByEdition($edition);
         foreach ($candidats as $candidat) {
@@ -466,6 +465,7 @@ class DefaultController extends AbstractController
             }
             $candidat->setPosition($j);
         }
+        $entityManager->flush();
     }
 
     /**

@@ -52,7 +52,7 @@
                     $("#dt>tbody input[type=text]").each(function () {
                         var row = $(this).closest('tr')[0];
                         var id = row.cells[0].innerText;
-                        var quantity = row.cells[5].children[0].value;
+                        var quantity = row.cells[6].children[0].value;
                         item = {};
                         item['vote'] = quantity;
                         item['id'] = id;
