@@ -2,5 +2,6 @@
         <i class="nc-icon nc-button-play"></i></a>
     <a id="editBtn" class="btn btn-success" type="button" title="Modifier"  href="{{ path('candidat_edit', {'id': value}) }}">
         <i class="nc-icon nc-ruler-pencil"></i></a>
-    <button id="deleteBtn" class="btn btn-danger btn-flat delete" title="supprimer" name="deleteBtn" type="button" onclick='getItem_id({{ value }})'>
+    <button id="deleteBtn" class="btn btn-danger btn-flat delete" data-toggle="modal"
+            data-target="#deleteModal" title="supprimer" name="deleteBtn" type="button" onclick='getItem_id({{ value }})'>
         <i class="nc-icon nc-simple-remove"></i></button></div>
