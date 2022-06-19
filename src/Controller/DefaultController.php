@@ -11,6 +11,7 @@ use App\Repository\PartenaireRepository;
 use App\Repository\VoteRepository;
 use App\Utils\ClientPaymoo;
 use App\Utils\ClientServer;
+use App\Utils\FlutterwaveService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -29,12 +30,13 @@ class DefaultController extends AbstractController
     private $voteRepository;
     private $configRepository;
     private $partenaireRepository;
+    private $flutterwaveService;
 
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(FlutterwaveService $flutterwaveService,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -43,6 +45,7 @@ class DefaultController extends AbstractController
         $this->voteRepository = $voteRepository;
         $this->configRepository = $configRepository;
         $this->partenaireRepository = $partenaireRepository;
+        $this->flutterwaveService=$flutterwaveService;
     }
 
     /**
@@ -396,6 +399,8 @@ class DefaultController extends AbstractController
         $this->logger->error("----------------------- notify call". $request->get('vote'));
         if (isset($data['status'])) {
             $status = $data['status'];
+        }else{
+            $status = $data['status'];
         }
 
         $vote_ = $this->voteRepository->find($request->get('vote'));
@@ -410,16 +415,43 @@ class DefaultController extends AbstractController
         return new JsonResponse($status, 200);
     }
     /**
+     * @Route("/notifyurlflutter/ajax", name="notifyurlflutterajax", methods={"POST","GET"})
+     */
+    public function notifyurlflutter(Request $request)
+    {
+        $this->logger->error("----------------------- notify call");
+        $data=json_decode($request->getContent(), true);
+        $this->logger->error("----------------------- notify call". $request->get('vote'));
+        if (!empty($request->get('status'))) {
+            $status = $request->get('status');
+            $vote_ = $this->voteRepository->find($request->get('vote'));
+            if ($vote_->getStatus() == "PENDING") {
+
+                if ($status == "successful") {
+                    $this->updateVote($vote_, 'ACCEPTED');
+                } elseif ($status == "cancelled") {
+                    $this->updateVote($vote_, 'REFUSED');
+                }
+            }
+        }else{
+            $status = $request->get('status');
+        }
+
+        return $this->redirectToRoute('home');
+    }
+    /**
      * @Route("/notifyurlproductpaymoo/ajax", name="notifyurlproductpaymoo", methods={"POST","GET"})
      */
     public function notifyurlproductpaymoo(Request $request): Response
     {
         $this->logger->error("notify call");
-        if (isset($_POST['status'])) {
-            $status = $_POST['status'];
-        }
+            $status = $request->get('status');
 
-        return new JsonResponse($status, 200);
+        if ($status == "successful") {
+            return $this->redirectToRoute('home');
+        } else {
+            return $this->redirectToRoute( 'boutique');
+        }
     }
     protected function generateRang()
     {
@@ -499,7 +531,7 @@ class DefaultController extends AbstractController
         //return new JsonResponse($data, 200);
     }
     /**
-     * @Route("/sendpaiementinternational/ajax", name="sendpaiementinternationalajax", methods={"POST"})
+     * @Route("/sendpaiementinternationalpaymoo/ajax", name="sendpaiementinternationalpaymooajax", methods={"POST"})
      */
     public function sendpaiementinternational(Request $request): Response
     {
@@ -552,6 +584,60 @@ class DefaultController extends AbstractController
             $url = $response["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
+            return $this->redirect($url);
+        }
+
+        return $this->redirectToRoute("home");
+
+        //return new JsonResponse($data, 200);
+    }
+    /**
+     * @Route("/sendpaiementinternational/ajax", name="sendpaiementinternationalajax", methods={"POST"})
+     */
+    public function sendpaiementinternationalflutter(Request $request): Response
+    {
+        $candidat_id = $request->get("candidatid");
+        $candidat = $this->candidatRepository->find($candidat_id);
+        $client_votes = $request->get("clientintvote");
+        $client_phone = $request->get("clientphone");
+        $client_email = $request->get("clientemail");
+        $this->logger->log(200, $request->get("clientphone"));
+        $this->logger->info($request->get("clientvote"));
+        $current_url = $this->params->get('domain');
+        $transaction_id = "";
+        $allowed_characters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+        for ($i = 1; $i <= 12; ++$i) {
+            $transaction_id .= $allowed_characters[rand(0, count($allowed_characters) - 1)];
+        }
+        $reference = $transaction_id;
+        $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
+        $amount = $this->getAmountInternational($client_votes);
+        $notify_url = $this->generateUrl('notifyurlflutterajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
+        $key=$this->params->get('paymookey');
+        $notify_url = $this->params->get('domain') . $notify_url;
+        $data = [
+            'amount' => $amount,
+            'currency' => 'USD',
+            'payment_method' => 'card',
+            'country' => 'CMR',
+            'ref' => $reference,
+            'title' => $product,
+            'description' => 'Voting session',
+            'email' => $client_email,
+            'phonenumber' => $client_phone,
+            'name' => 'Dossard:'.$candidat->getDossard().'-'.$candidat->getLastname(),
+            'last_name' => $candidat->getLastname(),
+            'logo' => 'http://www.piedpiper.com/app/themes/joystick-v27/images/logo.png',
+            'pay_button_text' => "Valider le vote",
+            'successurl' => $notify_url,
+            'redirect_url' => $notify_url,
+        ];
+        $response= $this->flutterwaveService->postPayement($data);
+        $this->logger->info($notify_url);
+        if ($response['status'] == "success") {
+            $this->createVote($candidat, $client_votes);
+            $url = $response["data"]['link'];
+            $this->logger->info($url);
             return $this->redirect($url);
         }
 

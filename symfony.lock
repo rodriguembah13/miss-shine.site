@@ -112,12 +112,6 @@
     "laminas/laminas-eventmanager": {
         "version": "3.3.1"
     },
-    "laminas/laminas-json": {
-        "version": "3.2.0"
-    },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.2.0"
-    },
     "mailchimp/marketing": {
         "version": "3.0.73"
     },
@@ -127,17 +121,8 @@
     "monolog/monolog": {
         "version": "2.2.0"
     },
-    "mpdf/mpdf": {
-        "version": "v8.0.10"
-    },
-    "myclabs/deep-copy": {
-        "version": "1.10.2"
-    },
     "nikic/php-parser": {
         "version": "v4.10.4"
-    },
-    "ob/highcharts-bundle": {
-        "version": "1.7"
     },
     "omines/datatables-bundle": {
         "version": "0.1",
@@ -147,9 +132,6 @@
             "version": "0.1",
             "ref": "467488ddc00aa190c37a4357f226457d4dd6b339"
         }
-    },
-    "paragonie/random_compat": {
-        "version": "v9.99.100"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -181,9 +163,6 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
-    "sasedev/mpdf-bundle": {
-        "version": "2.0.0"
-    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -195,9 +174,6 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
-    },
-    "setasign/fpdi": {
-        "version": "v2.3.6"
     },
     "symfony/asset": {
         "version": "v5.2.4"

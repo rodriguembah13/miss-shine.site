@@ -10,6 +10,7 @@ use App\Repository\ProductRepository;
 use App\Repository\VoteRepository;
 use App\Utils\ClientPaymoo;
 use App\Utils\ClientServer;
+use App\Utils\FlutterwaveService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -30,12 +31,12 @@ class BoutiqueController extends AbstractController
     private $configRepository;
     private $partenaireRepository;
     private $productRepository;
-
+    private $flutterwaveService;
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(ProductRepository $productRepository,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(FlutterwaveService $flutterwaveService,ProductRepository $productRepository,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -45,6 +46,7 @@ class BoutiqueController extends AbstractController
         $this->configRepository = $configRepository;
         $this->partenaireRepository = $partenaireRepository;
         $this->productRepository=$productRepository;
+        $this->flutterwaveService=$flutterwaveService;
     }
 
     /**
@@ -224,37 +226,32 @@ class BoutiqueController extends AbstractController
         $reference = $transaction_id;
         $product = "vote miss-shinne : donnation";
 
+
         $notify_url = $this->generateUrl('notifyurlproductpaymoo', []);
-        $notify_url = $this->params->get('domain') . $notify_url;
         $key=$this->params->get('paymookey');
+        $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $initprice,
-            'currency_code' => $currency,
-            'ccode' => 'CM',
-            'lang' => 'en',
-            'item_ref' => $reference,
-            'item_name' => $product,
+            'currency' => 'USD',
+            'payment_method' => 'card',
+            'country' => 'CMR',
+            'ref' => $reference,
+            'title' => $product,
             'description' => 'Voting session',
             'email' => $email,
-            'phone' => $phone,
-            'first_name' => $firstname,
-            'last_name' => $lastname,
-            'public_key' => $key,
-            'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
-            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
-            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
-            'callbackUrl' => $notify_url,
-            'callbackOnFailureUrl' => $notify_url,
-            'redirectTarget' => 'TOP',
-            'merchantCustomerId' => $reference,
-            'environement' => 'test',
+            'phonenumber' => $phone,
+            'name' => $firstname.' '.$lastname,
+            'last_name' =>"",
+            'logo' => 'http://www.piedpiper.com/app/themes/joystick-v27/images/logo.png',
+            'pay_button_text' => "Valider le don",
+            'successurl' => $notify_url,
+            'redirect_url' => $notify_url,
         ];
-        $client = new ClientPaymoo();
-        $response = $client->postfinal("payment_url", $data);
-        $this->logger->info($response['response']);
-        if ($response['response'] == "success") {
-            $url = $response["payment_url"];
-            $link_array = explode('/', $url);
+        $response= $this->flutterwaveService->postPayement($data);
+        $this->logger->info($notify_url);
+        if ($response['status'] == "success") {
+            $url = $response["data"]['link'];
+            $this->logger->info($url);
             return $this->redirect($url);
         }
 
@@ -291,21 +288,20 @@ class BoutiqueController extends AbstractController
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $initprice,
-            'currency_code' => $currency,
-            'ccode' => 'CM',
+            'currency_code' => 'XAF',
+            'code' => 'CM',
             'lang' => 'en',
             'item_ref' => $reference,
             'item_name' => $product,
-            'description' => 'Voting session',
+            'description' => 'Boutique:',
             'email' => $email,
             'phone' => $phone,
             'first_name' => $firstname,
             'last_name' => $lastname,
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
-            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
-            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
-            'callbackUrl' => $notify_url,
+            'redirectUrl' => $current_url . '?orderpay=' . $reference,
+           'callbackUrl' => $notify_url,
             'callbackOnFailureUrl' => $notify_url,
             'redirectTarget' => 'TOP',
             'merchantCustomerId' => $reference,

@@ -4,7 +4,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=7.2.5",
+    "php": ">=8.0",
     "ext-ctype": "*",
     "ext-iconv": "*",
     "ext-json": "*",
@@ -17,10 +17,8 @@
     "guzzlehttp/guzzle": "^6.5",
     "mailchimp/marketing": "^3.0",
     "mailchimp/transactional": "^1.0",
-    "ob/highcharts-bundle": "^1.7",
     "omines/datatables-bundle": "^0.5.5",
     "phpdocumentor/reflection-docblock": "^5.2",
-    "sasedev/mpdf-bundle": "^2.0",
     "sensio/framework-extra-bundle": "^5.1",
     "symfony/asset": "5.2.*",
     "symfony/console": "5.2.*",
@@ -48,8 +46,7 @@
     "symfony/web-link": "5.2.*",
     "symfony/yaml": "5.2.*",
     "twig/extra-bundle": "^2.12|^3.0",
-    "twig/twig": "^2.12|^3.0",
-    "ext-http": "*"
+    "twig/twig": "^2.12|^3.0"
   },
   "require-dev": {
     "symfony/browser-kit": "^5.2",
