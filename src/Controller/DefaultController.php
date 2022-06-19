@@ -391,12 +391,14 @@ class DefaultController extends AbstractController
      */
     public function notifyurlpaymoo(Request $request): Response
     {
-        $this->logger->error("notify call");
-        if (isset($_POST['status'])) {
-            $status = $_POST['status'];
+        $this->logger->error("----------------------- notify call");
+        $data=json_decode($request->getContent(), true);
+        $this->logger->error("----------------------- notify call". $request->get('vote'));
+        if (isset($data['status'])) {
+            $status = $data['status'];
         }
 
-        $vote_ = $this->voteRepository->find($_GET['vote']);
+        $vote_ = $this->voteRepository->find($request->get('vote'));
         if ($vote_->getStatus() == "PENDING") {
 
             if ($status == "Success") {
@@ -483,7 +485,9 @@ class DefaultController extends AbstractController
         $client = new ClientPaymoo();
         $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
+        $this->logger->info('------------------------'.$notify_url);
         if ($response['response'] == "success") {
+            $this->createVote($candidat, $client_votes);
             $url = $response["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
@@ -544,6 +548,7 @@ class DefaultController extends AbstractController
         $response = $client->postfinal("payment_url", $data);
         $this->logger->info($notify_url);
         if ($response['response'] == "success") {
+            $this->createVote($candidat, $client_votes);
             $url = $response["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
