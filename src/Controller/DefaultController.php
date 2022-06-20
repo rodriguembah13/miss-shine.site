@@ -395,20 +395,15 @@ class DefaultController extends AbstractController
      */
     public function notifyurlpaymoo(Request $request): Response
     {
-        $this->logger->error("----------------------- notify call");
+
         $data=json_decode($request->getContent(), true);
         $this->logger->error("----------------------- notify call". $request->get('vote'));
-        if (isset($data['status'])) {
-            $status = $data['status'];
-        }else{
-            $status = $data['status'];
-        }
-
+        $this->logger->error("----------------------- notify call".$data['status']);
         $vote_ = $this->voteRepository->find($request->get('vote'));
         if ($vote_->getStatus() == "PENDING") {
-            if ($status == "Success") {
+            if ($data['status'] == "Success") {
                 $this->updateVote($vote_, 'ACCEPTED');
-            } elseif ($status == "Failed") {
+            } elseif ($data['status'] == "Failed") {
                 $this->updateVote($vote_, 'REFUSED');
             }
         }
