@@ -262,13 +262,15 @@ class DefaultController extends AbstractController
     protected function getAmountInternational($votes)
     {
         $val = 0;
-        if ($votes == 10) {
+        if ($votes == 50) {
+            $val = 10;
+        } elseif ($votes == 100) {
             $val = 20;
-        } elseif ($votes == 50) {
+        } elseif ($votes == 160) {
             $val = 30;
-        } elseif ($votes == 70) {
+        } elseif ($votes == 270) {
             $val = 50;
-        } elseif ($votes == 150) {
+        }elseif ($votes == 530) {
             $val = 100;
         }
         return $val;
@@ -404,10 +406,9 @@ class DefaultController extends AbstractController
 
         $vote_ = $this->voteRepository->find($request->get('vote'));
         if ($vote_->getStatus() == "PENDING") {
-
             if ($status == "Success") {
                 $this->updateVote($vote_, 'ACCEPTED');
-            } elseif ($status == "REFUSED") {
+            } elseif ($status == "Failed") {
                 $this->updateVote($vote_, 'REFUSED');
             }
         }
@@ -507,10 +508,11 @@ $this->generateRang();
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
             'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
-            //"redirectOnFailureUrl" => $order->get_cancel_order_url(),//$this->siteUrl . $this->FAILURE_REDIRECT_URL . $orderIdString,
             'callbackUrl' => $notify_url,
             'callbackOnFailureUrl' => $notify_url,
+            'ref_payment'=>$reference,
             'redirectTarget' => 'TOP',
+            'transaction_number'=>$reference,
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];

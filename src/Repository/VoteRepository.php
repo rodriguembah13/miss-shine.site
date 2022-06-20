@@ -21,7 +21,11 @@ class VoteRepository extends ServiceEntityRepository
 
     public function getVoteACCEPTED(){
         $vote=0;
-       // $votes=
+       $votes=$this->findBy(['status'=>"ACCEPTED"]);
+       foreach ($votes as $vote_){
+           $vote+=$vote_->getNombreVote();
+       }
+       return $vote;
     }
     public function findOneByLast()
     {
