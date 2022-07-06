@@ -402,13 +402,13 @@ class DefaultController extends AbstractController
         $this->logger->error("----------------------- notify call".$status);
         $vote_ = $this->voteRepository->find($request->get('vote'));
 
-        if ($vote_->getStatus() === "PENDING") {
+       // if ($vote_->getStatus() === "PENDING") {
             if (strtolower($status) === "success") {
                 $this->updateVote($vote_, 'ACCEPTED');
             } elseif (strtolower($status) === "failed") {
                 $this->updateVote($vote_, 'REFUSED');
             }
-        }
+     //   }
         return new JsonResponse($status, 200);
     }
     /**
