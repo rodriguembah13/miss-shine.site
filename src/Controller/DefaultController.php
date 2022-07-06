@@ -397,17 +397,19 @@ class DefaultController extends AbstractController
     {
 
         $data=json_decode($request->getContent(), true);
+        $status = $_POST['status'];
         $this->logger->error("----------------------- notify call". $request->get('vote'));
-        $this->logger->error("----------------------- notify call".$_POST['status']);
+        $this->logger->error("----------------------- notify call".$status);
         $vote_ = $this->voteRepository->find($request->get('vote'));
-        if ($vote_->getStatus() == "PENDING") {
-            if ($_POST['status'] == "Success") {
+
+        if ($vote_->getStatus() === "PENDING") {
+            if (strtolower($status) === "success") {
                 $this->updateVote($vote_, 'ACCEPTED');
-            } elseif ($_POST['status'] == "Failed") {
+            } elseif (strtolower($status) === "failed") {
                 $this->updateVote($vote_, 'REFUSED');
             }
         }
-        return new JsonResponse($_POST['status'], 200);
+        return new JsonResponse($status, 200);
     }
     /**
      * @Route("/notifyurlflutter/ajax", name="notifyurlflutterajax", methods={"POST","GET"})
