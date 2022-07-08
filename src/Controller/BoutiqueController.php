@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 /**
- * @Route("/boutique")
+ * @Route("/admin8796patr214vgfd/boutique")
  */
 class BoutiqueController extends AbstractController
 {

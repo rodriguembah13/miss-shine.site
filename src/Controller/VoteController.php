@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/vote")
+ * @Route("/admin8796patr214vgfd/vote")
  */
 class VoteController extends AbstractController
 {

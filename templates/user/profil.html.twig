@@ -1,10 +1,12 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'baseback.html.twig' %}
+{% block title %}Edit User{% endblock %}
 {% block body %}
-
-{% endblock %}
-
-{% block title %}
-
+    <div class="content">
+        <div class="card card-stats">
+            <div class="card-body ">
+                        {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+                    </div>
+                </div>
+            </div>
 {% endblock %}
 

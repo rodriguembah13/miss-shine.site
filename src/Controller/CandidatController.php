@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/candidat")
+ * @Route("/admin8796patr214vgfd/candidat")
  */
 class CandidatController extends AbstractController
 {
@@ -59,7 +59,7 @@ class CandidatController extends AbstractController
                 }
             ])
             ->add('firstname', TextColumn::class, [
-                'field' => 'e.firstname',
+               // 'field' => 'e.firstname',
                 'className' => "text-center"
             ])
             ->add('lastname', TextColumn::class, [
@@ -78,6 +78,7 @@ class CandidatController extends AbstractController
             ->add('nombreVote', TwigColumn::class, [
                 'label' => 'dt.columns.nombrevote',
                 'field' => 'e.vote',
+                'orderable' => false,
                 'template' => 'candidat/voteinput.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
@@ -98,6 +99,7 @@ class CandidatController extends AbstractController
             ->add('id', TwigColumn::class, [
                 'className' => 'buttons text-center',
                 'label' => 'action',
+                'orderable' => false,
                 'template' => 'candidat/buttonbar.html.twig',
                 'render' => function ($value, $context) {
                     return $value;

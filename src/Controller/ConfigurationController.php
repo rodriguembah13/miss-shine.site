@@ -25,7 +25,7 @@ class ConfigurationController extends AbstractController
     }
 
     /**
-     * @Route("/configuration", name="configuration", methods={"GET","POST"})
+     * @Route("/admin8796patr214vgfd/configuration", name="configuration", methods={"GET","POST"})
      */
     public function index(Request $request): Response
     {

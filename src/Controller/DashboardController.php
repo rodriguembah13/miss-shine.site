@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin")
+ * @Route("/admin8796patr214vgfd")
  */
 class DashboardController extends AbstractController
 {

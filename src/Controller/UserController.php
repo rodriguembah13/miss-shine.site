@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @Route("/user")
+ * @Route("/admin8796patr214vgfd/user")
  *
  */
 class UserController extends AbstractController
@@ -187,16 +187,30 @@ class UserController extends AbstractController
         }
     }
     /**
-     * @Route("/profil", name="profil")
+     * @Route("/profil/detail", name="profil")
      */
-    public function profil(): Response
+    public function profil(Request $request): Response
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
+        $form = $this->createForm(UserType::class, $user)->add('imageFilename',FileType::class,[
+            'mapped'=>false,
+            'label'=>'Photo',
+            'required'=>false,
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword= $form['password']->getData();
+            $encodedPassword = $this->passwordEncoder->encodePassword($user, $plainPassword);
+            $user->setPassword($encodedPassword);
+        }
+        $this->getDoctrine()->getManager()->flush();
         return $this->render('user/profil.html.twig', [
             'user' => $user,
+            'title'=>"profil",
+            'form' => $form->createView(),
         ]);
 }
 }

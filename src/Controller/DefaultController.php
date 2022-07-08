@@ -288,6 +288,12 @@ class DefaultController extends AbstractController
         } elseif ($votes == 15) {
             $val = 1000;
         }
+        elseif ($votes == 60) {
+            $val = 5000;
+        }
+        elseif ($votes == 125) {
+            $val = 10000;
+        }
         return $val;
     }
 

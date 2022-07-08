@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/partenaire")
+ * @Route("/admin8796patr214vgfd/partenaire")
  */
 class PartenaireController extends AbstractController
 {

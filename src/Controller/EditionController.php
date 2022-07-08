@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/edition")
+ * @Route("/admin8796patr214vgfd/edition")
  */
 class EditionController extends AbstractController
 {
