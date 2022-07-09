@@ -41,11 +41,12 @@ class BilletController extends AbstractController
     private $flutterwaveService;
     private $billetRepository;
     private $dataTableFactory;
+
     /**
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(DataTableFactory $dataTableFactory,BilletRepository $billetRepository,FlutterwaveService $flutterwaveService,ProductRepository $productRepository,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(DataTableFactory $dataTableFactory, BilletRepository $billetRepository, FlutterwaveService $flutterwaveService, ProductRepository $productRepository, PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -54,11 +55,12 @@ class BilletController extends AbstractController
         $this->voteRepository = $voteRepository;
         $this->configRepository = $configRepository;
         $this->partenaireRepository = $partenaireRepository;
-        $this->productRepository=$productRepository;
-        $this->flutterwaveService=$flutterwaveService;
-        $this->billetRepository=$billetRepository;
+        $this->productRepository = $productRepository;
+        $this->flutterwaveService = $flutterwaveService;
+        $this->billetRepository = $billetRepository;
         $this->dataTableFactory = $dataTableFactory;
     }
+
     /**
      * @Route("/admin8796patr214vgfd/billet", name="billet")
      */
@@ -70,7 +72,7 @@ class BilletController extends AbstractController
                 'className' => "text-center"
             ])
             ->add('firstname', TextColumn::class, [
-                 'field' => 'e.firstname',
+                'field' => 'e.firstname',
                 'className' => "text-center"
             ])
             ->add('lastname', TextColumn::class, [
@@ -81,10 +83,10 @@ class BilletController extends AbstractController
                 'field' => 'e.amount',
                 'className' => "text-center"
             ])
-            ->add('Candidat', TextColumn::class,[
-                'label'=>'dt.columns.candidat',
+            ->add('Candidat', TextColumn::class, [
+                'label' => 'dt.columns.candidat',
                 'field' => 'c.firstname',
-                'className'=>"text-center"
+                'className' => "text-center"
             ])
             ->add('phone', TextColumn::class, [
                 'className' => "text-center",
@@ -100,15 +102,15 @@ class BilletController extends AbstractController
                 'searchable' => false,
                 'label' => 'dt.columns.createdat'
             ])
-           /* ->add('id', TwigColumn::class, [
-                'className' => 'buttons text-center',
-                'label' => 'action',
-                'field' => 'e.id',
-                'orderable' => false,
-                'template' => 'candidat/buttonbar.html.twig',
-                'render' => function ($value, $context) {
-                    return $value;
-                }])*/
+            /* ->add('id', TwigColumn::class, [
+                 'className' => 'buttons text-center',
+                 'label' => 'action',
+                 'field' => 'e.id',
+                 'orderable' => false,
+                 'template' => 'candidat/buttonbar.html.twig',
+                 'render' => function ($value, $context) {
+                     return $value;
+                 }])*/
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Billet::class,
                 'query' => function (QueryBuilder $builder) {
@@ -116,8 +118,7 @@ class BilletController extends AbstractController
                         ->select('e')
                         ->addSelect('c')
                         ->from(Billet::class, 'e')
-                       ->leftJoin('e.candidat','c')
-                       // ->orderBy("e.id", "ASC")
+                        ->leftJoin('e.candidat', 'c')// ->orderBy("e.id", "ASC")
                     ;
                 },
             ])->handleRequest($request);
@@ -129,6 +130,7 @@ class BilletController extends AbstractController
             'datatable' => $table
         ]);
     }
+
     /**
      * @Route("/billeteries", name="billeteries")
      */
@@ -139,56 +141,60 @@ class BilletController extends AbstractController
             'products' => $this->productRepository->findAll()
         ]);
     }
-    /**
-     * @Route("/billeteriespay/{indice}", name="billeteriespay")
-     */
-    public function billeteriespay(Request $request,$indice): Response
-    {
-        $initprice=0.0;
-        $typebillet="";
-        if ($indice==1){
-           $initprice=2000;
-           $typebillet="Billet standard 2000 FCFA";
 
-        }elseif ($indice==2){
-            $initprice=5000;
-            $typebillet="Billet Gold 5000 FCFA";
-        }else{
-            $initprice=10000;
-            $typebillet="Billet Vip 10000 FCFA";
+    /**
+     * @Route("/billeteriespay/{indice}/{region}", name="billeteriespay")
+     */
+    public function billeteriespay(Request $request, $indice,$region): Response
+    {
+        $initprice = 0.0;
+        $typebillet = "";
+        if ($indice == 1) {
+            $initprice = 2000;
+            $typebillet = "Billet standard 2000 FCFA";
+
+        } elseif ($indice == 2) {
+            $initprice = 5000;
+            $typebillet = "Billet Gold 5000 FCFA";
+        } else {
+            $initprice = 10000;
+            $typebillet = "Billet Vip 10000 FCFA";
         }
-        $billet=new Billet();
+        $billet = new Billet();
         $form = $this->createFormBuilder($billet)
             ->add('candidat', EntityType::class, [
-            'class' => Candidat::class,
-            'multiple' => false,
-            'placeholder' => 'veuillez choisir une candidate',
-            'required' => true,
-            'label' => 'Candidat(e) a suivre ',
-            'attr' => ['name'=>"candidat",'class' => 'selectpicker form-select form-control rounded-0', 'data-size' => 5, 'data-live-search' => true],
-        ])->getForm();
+                'class' => Candidat::class,
+                'multiple' => false,
+                'placeholder' => 'veuillez choisir une candidate',
+                'required' => true,
+                'label' => 'Candidat(e) a suivre ',
+                'attr' => ['name' => "candidat", 'class' => 'selectpicker form-select form-control rounded-0', 'data-size' => 5, 'data-live-search' => true],
+            ])->getForm();
         $form->handleRequest($request);
         return $this->render('billet/billeteriepay.html.twig', [
             'partenaires' => $this->partenaireRepository->findBy(['active' => true]),
             'initprice' => $initprice,
-            'typebillet'=>$typebillet,
+            'typebillet' => $typebillet,
+            'region'=>$region,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * @Route("/paiementpaybillet/ajax", name="paiementpaybilletajax", methods={"POST"})
      */
     public function paiementpaybillet(Request $request): Response
     {
-       // dump($request);
+        // dump($request);
         //die("200");
         $initprice = $request->get("initprice");
+        $region = $request->get("region");
         $firstname = $request->get("firstname");
         $lastname = $request->get("lastname");
         $email = $request->get("email");
         $phone = $request->get("phone");
         $candidat_id = $request->get("form")['candidat'];
-        $this->logger->error("----------------------- notify Billeterie".$candidat_id);
+        $this->logger->error("----------------------- notify Billeterie" . $candidat_id);
         $name = $request->get("shopname");
         $this->logger->log(200, $request->get("firstname"));
         $this->logger->info($request->get("initprice"));
@@ -202,7 +208,7 @@ class BilletController extends AbstractController
         $product = "Vente de billet";
         $notify_url = $this->generateUrl('notifyurlbilleterieajax', ['billet' => $this->getLast(), 'candidat' => $candidat_id]);
 
-        $key=$this->params->get('paymookey');
+        $key = $this->params->get('paymookey');
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $initprice,
@@ -211,7 +217,7 @@ class BilletController extends AbstractController
             'lang' => 'en',
             'item_ref' => $reference,
             'item_name' => $product,
-            'description' => 'Billeterie:',
+            'description' => $region,
             'email' => $email,
             'phone' => $phone,
             'first_name' => $firstname,
@@ -236,6 +242,7 @@ class BilletController extends AbstractController
 
         return $this->redirectToRoute("billeteries");
     }
+
     private function getLast()
     {
         $last = null;
@@ -246,33 +253,36 @@ class BilletController extends AbstractController
         }
         return $last + 1;
     }
+
     /**
      * @Route("/notifyurlbilleterie/ajax", name="notifyurlbilleterieajax", methods={"POST","GET"})
      */
     public function notifyurlbilleterie(Request $request): Response
     {
         $status = $_POST['status'];
-        $this->logger->error("----------------------- notify Billeterie". $request->get('billet'));
-        $this->logger->error("----------------------- notify Billeterie".$status);
+        $this->logger->error("----------------------- notify Billeterie" . $request->get('billet'));
+        $this->logger->error("----------------------- notify Billeterie" . $status);
         $candidat_ = $this->candidatRepository->find($request->get('candidat'));
 
         if (strtolower($status) === "success") {
-            $billet=new Billet();
+            $billet = new Billet();
             $billet->setEmail($_POST['email']);
             $billet->setFirstname($_POST['name']);
             $billet->setLastname($_POST['name']);
             $billet->setAmount($_POST['amount']);
             $billet->setPhone($_POST['phone']);
-            $billet->setVille($_POST['email']);
+            $billet->setVille($_POST['description']);
             $billet->setCandidat($candidat_);
-            $billet->setEdition($this->editionrepository->findOneBy(['status'=>'Publie']));
+            $billet->setEdition($this->editionrepository->findOneBy(['status' => 'Publie']));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($billet);
             $entityManager->flush();
         }
         return new JsonResponse($status, 200);
     }
-    private function createBillet($somme,$candidat){
+
+    private function createBillet($somme, $candidat)
+    {
 
 
     }

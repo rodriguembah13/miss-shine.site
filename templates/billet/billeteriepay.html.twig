@@ -10,7 +10,7 @@
         <div class="col-xl-8 offset-xl-2">
             <div class="sec-title text-center black wow bounceIn">
                 <span></span>
-                <h3>{{ typebillet }}</h3>
+                <h3>Grand {{ region }} - {{ typebillet }}</h3>
                 <p>Achétez vos billets pour vivre en direct l'évenement</p>
             </div><!-- /.sec-title -->
         </div>
@@ -25,6 +25,8 @@
                             <div class="row">
                                 <input name="initprice" class="hidden"
                                        value="{{ initprice }}">
+                                <input name="region" class="hidden"
+                                       value="{{ region }}">
                             <div class="mb-3 col-md-6">
                                 <label class="control-label" for="firstname">
                                     Nom:</label>
