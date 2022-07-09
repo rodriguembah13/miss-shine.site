@@ -10,6 +10,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,6 +79,9 @@ class VoteController extends AbstractController
                 'render' => function ($value, $context) {
                     return $value;
                 }])
+            ->addOrderBy('status',  DataTable::SORT_ASCENDING)
+            ->addOrderBy('createdAt',  DataTable::SORT_DESCENDING)
+
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Vote::class,
                 'query' => function (QueryBuilder $builder) {

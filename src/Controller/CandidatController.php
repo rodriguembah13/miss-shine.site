@@ -12,6 +12,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -78,7 +79,7 @@ class CandidatController extends AbstractController
             ->add('nombreVote', TwigColumn::class, [
                 'label' => 'dt.columns.nombrevote',
                 'field' => 'e.vote',
-                'orderable' => false,
+               // 'orderable' => false,
                 'template' => 'candidat/voteinput.html.twig',
                 'render' => function ($value, $context) {
                     return $value;
@@ -104,6 +105,7 @@ class CandidatController extends AbstractController
                 'render' => function ($value, $context) {
                     return $value;
                 }])
+            ->addOrderBy('nombreVote',  DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Candidat::class,
                 'query' => function (QueryBuilder $builder) {
