@@ -41,11 +41,17 @@ class Edition
      */
     private $candidats;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Billet::class, mappedBy="edition")
+     */
+    private $billets;
+
     public function __construct()
     {
         $this->candidats = new ArrayCollection();
         $this->createdAt=new \DateTime('now');
         $this->updatedAt=new \DateTime('now');
+        $this->billets = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -157,6 +163,36 @@ class Edition
     public function __toString()
     {
        return $this->libelle;
+    }
+
+    /**
+     * @return Collection|Billet[]
+     */
+    public function getBillets(): Collection
+    {
+        return $this->billets;
+    }
+
+    public function addBillet(Billet $billet): self
+    {
+        if (!$this->billets->contains($billet)) {
+            $this->billets[] = $billet;
+            $billet->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBillet(Billet $billet): self
+    {
+        if ($this->billets->removeElement($billet)) {
+            // set the owning side to null (unless already changed)
+            if ($billet->getEdition() === $this) {
+                $billet->setEdition(null);
+            }
+        }
+
+        return $this;
     }
 
 }

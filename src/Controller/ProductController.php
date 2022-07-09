@@ -80,7 +80,6 @@ class ProductController extends AbstractController
                     $builder
                         ->select('e')
                         ->from(Product::class, 'e')
-                        ->orderBy("e.name","ASC")
                     ;
                 },
             ])->handleRequest($request);

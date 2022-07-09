@@ -47,4 +47,13 @@ class BilletRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findOneByLast()
+    {
+        return $this->createQueryBuilder('s')
+            ->setMaxResults(1)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

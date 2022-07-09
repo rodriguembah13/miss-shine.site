@@ -110,7 +110,8 @@ class CandidatController extends AbstractController
                     $builder
                         ->select('e')
                         ->from(Candidat::class, 'e')
-                        ->orderBy("e.position", "ASC");
+                        //->orderBy("e.position", "ASC")
+                    ;
                 },
             ])->handleRequest($request);
         if ($table->isCallback()) {

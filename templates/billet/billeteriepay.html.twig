@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Billeteries-pay{% endblock %}
+
+{% block body %}
+    <div class="wrapper bgded overlay" style="background-image:url({{ asset('images/imagemiss.jpg') }});">
+        <div class="page-title text-center wow fadeInRightBig"><h1 class="heading">Billeteries</h1></div>
+    </div>
+    <div class="row pt-20" style="background-color: #f9f9f9">
+        <div class="col-xl-8 offset-xl-2">
+            <div class="sec-title text-center black wow bounceIn">
+                <span></span>
+                <h3>{{ typebillet }}</h3>
+                <p>Achétez vos billets pour vivre en direct l'évenement</p>
+            </div><!-- /.sec-title -->
+        </div>
+    </div>
+    <div class="single-product-">
+        <div class="container">
+            <div class="row"><div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form class="form" method="post" name="nationalpay"
+                              action="{{ path('paiementpaybilletajax') }}">
+                            <div class="row">
+                                <input name="initprice" class="hidden"
+                                       value="{{ initprice }}">
+                            <div class="mb-3 col-md-6">
+                                <label class="control-label" for="firstname">
+                                    Nom:</label>
+                                <input class="form-control" name="firstname"
+                                       id="firstname">
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="control-label" for="lastname">
+                                    Prenom:</label>
+                                <input class="form-control" name="lastname"
+                                       id="lastname">
+                            </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="control-label" for="email">
+                                        Email:</label>
+                                    <input class="form-control" name="email"
+                                           id="email">
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="control-label" for="phone">
+                                        Téléphone:</label>
+                                    <input class="form-control" name="phone"
+                                           id="phone">
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    {{  form_row(form.candidat) }}
+                                    {#  {{ form_label(form.candidat, 'My Custom Task Label',{'label_attr': {'class': 'control-label'}}) }}
+                                   {{  form_row(form.candidat) }}
+                                    {{ form_widget(form.candidat, {'attr': {'class': 'selectpicker form-select form-control rounded-0'}}) }}
+                                   <select class="form-select form-control rounded-0" data-control="select2" data-placeholder="Select an option">
+                                        <option></option>
+                                        <option value="1">Option 1</option>
+                                        <option value="2">Option 2</option>
+                                        <option value="3">Option 3</option>
+                                        <option value="4">Option 4</option>
+                                        <option value="5">Option 5</option>
+                                    </select>#}
+                                   {# <select name="candidat" class="js-data-example-ajax"></select>#}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-primary float-right">Valider</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="brand-carousel-wrapper light-blue-bg  wow fadeIn">
+        <div class="container">
+            <div class="brand-carousel owl-carousel owl-theme">
+                {% for partenaire in partenaires %}
+                    {% if partenaire.logo %}
+                        <div class="item">
+                            <img src="{{ asset('uploads/logo/' ~ partenaire.logo) }}">
+                        </div>
+                    {% else %}
+                        <div class="item">
+                            <img src="{{ asset('images/brand-1.png') }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div><!-- /.brand-carousel -->
+        </div><!-- /.thm-container -->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('.js-data-example-ajax').select2({
+                ajax: {
+                    url: 'https://api.github.com/search/repositories',
+                    dataType: 'json'
+                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                }
+            });
+        });
+    </script>
+{% endblock %}

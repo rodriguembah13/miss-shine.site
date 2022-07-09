@@ -50,6 +50,12 @@
                     <p>Produits</p>
                 </a>
             </li>
+            <li{% if app.request.attributes.get( '_route' ) starts with 'billet' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('billet') }}">
+                    <i class="nc-icon nc-badge"></i>
+                    <p>Billeteries</p>
+                </a>
+            </li>
             <li class="divider-bar">
 
             </li>

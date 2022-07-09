@@ -1,0 +1,52 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Billeteries{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <div id="billets">{{ 'loading'|trans({}, 'messages') }}</div>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+            $(document).ready(function () {
+                $('#billets').initDataTables({{ datatable_settings(datatable) }});
+            });
+            $('.delete_item').click(function () {
+                $.ajax({
+                    url: "{{ path('candidat_delete_ajax') }}",
+                    type: "GET",
+                    dataType: "JSON",
+                    data: {
+                        item_id: $("#item_id").val(),
+                    },
+                    success: function (data) {
+                        $("#overlay").fadeOut(300);
+                        alert("Your item has been deleted.success");
+                        window.location.reload(true);
+                    },
+                    error: function (err) {
+                        $("#overlay").fadeOut(300);
+                        alert("Une erreur s'est produite: verifier les parametres. error");
+                    }
+                });
+
+
+                // alert(id)
+            })
+            function getItem_id(id) {
+                $("#item_id").val(id);
+                $("#item_name").text(id);
+            }
+        </script>
+    {% endblock %}

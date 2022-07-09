@@ -66,7 +66,7 @@ class VoteController extends AbstractController
             ->add('createdAt',  DateTimeColumn::class, [
                 'format' => 'd-m-Y',
                 'className'=>"text-center",
-                'orderable' => false,
+               // 'orderable' => false,
                 'searchable' => false,
                 'label'=>'dt.columns.createdat'
             ])
@@ -86,7 +86,7 @@ class VoteController extends AbstractController
                         ->addSelect('c')
                         ->from(Vote::class, 'e')
                         ->leftJoin('e.candidat', 'c')
-                        ->orderBy('e.id','DESC')
+                      //  ->orderBy('e.id','DESC')
                     ;
                 },
             ])->handleRequest($request);

@@ -30,6 +30,8 @@
            <link rel="stylesheet" href="{{ asset('front/css/font-awesome.min.css') }}">
             <!-- Bootstrap CSS -->
             <link rel="stylesheet" href="{{ asset('front/css/jquery.bxslider.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('front/select2/select2.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('front/select2/select2-bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('front/style.css') }}">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -53,10 +55,17 @@
         <script src="{{ asset('front/js/jquery.bootstrap.wizard.min.js') }}"></script>
         <script src="{{ asset('front/js/form-wizard.init.js') }}"></script>
         <script src="{{ asset('front/js/animate.js') }}"></script>
+        <script src="{{ asset('front/select2/select2.min.js') }}"></script>
        <script src="{{ asset('front/js/main.js') }}"></script>
         <!-- Load Facebook SDK for JavaScript -->
         <div id="fb-root"></div>
-        <script>(function(d, s, id) {
+        <script>
+            $(".selectpicker").select2(
+                {
+                    theme: "bootstrap"
+                }
+            );
+            (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;

@@ -73,7 +73,6 @@ class PartenaireController extends AbstractController
                     $builder
                         ->select('e')
                         ->from(Partenaire::class, 'e')
-                        ->orderBy("e.name","ASC")
                     ;
                 },
             ])->handleRequest($request);
