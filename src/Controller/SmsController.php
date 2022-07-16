@@ -138,6 +138,8 @@ class SmsController extends AbstractController
             'title' => "Sms Group",
             'customer' => "",
             'groupes'=>[
+                ['name'=>'Choisir type',
+                    'id'=>0],
                 ['name'=>'Depuis la base de donnée',
                     'id'=>1],
                 ['name'=>'Apartir du fichier excel',
