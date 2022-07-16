@@ -1,0 +1,168 @@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#loader').hide();
+        $('#updatecontact').hide()
+        $('#updatecontactlabel').hide()
+        $('#groupselect').change(function () {
+            console.log($(this).val())
+            if ($(this).val()==2){
+                $('#uploadModal').modal('show')
+                $('#updatecontact').show()
+                $('#updatecontactlabel').show()
+            }else {
+                $('#updatecontact').hide()
+                $('#updatecontactlabel').hide()
+                $('#contact_list>tbody').html(" ");
+                $.ajax({
+                    url: "{{ path('getcontactajax') }}",
+                    type: "GET",
+                    dataType: "JSON",
+                    success: function (data) {
+                        for (i = 0; i < data.length; i++) {
+                            var columns = Object.values(data[i])
+                            $("#contact_list>tbody:last").append("<tr><td><input class='checkbox hidden' type='checkbox' checked><span>"+columns[1]+"</span></td><td>"+columns[2]+"</td><td>"+columns[3]+"</td></tr>")
+                        }
+                        setTimeout(function () {
+                            $("#overlay").fadeOut(300);
+                        }, 500);
+                    },
+                    error: function (err) {
+                        setTimeout(function () {
+                            $("#overlay").fadeOut(300);
+                        }, 500);
+                    }
+                });
+            }
+
+        });
+        $("#form_message").keyup(function () {
+            var nbreCa=$(this).val().length;
+            var nbreCa=160-nbreCa;
+            var nbreMots=$(this).val().trim().split(' ').length;
+            if ($(this).val()===' '){
+                nbreMots=0;
+            }
+            var msg=' '+nbreMots+'mot(s) '+nbreCa+' Caractere(s) restant';
+            $("#compteur").text(msg);
+        })
+        $('#sendsms').click(function () {
+            $("#loader").fadeIn(300);
+            $.ajax({
+                url: "{{ path('sendsmsajax') }}",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    message: $('#form_message').val(),
+                    phone: $('#form_phone').val(),
+                    sender: $('#form_sender').val(),
+                },
+                success: function (data) {
+                    setTimeout(function () {
+                        $("#loader").fadeOut(300);
+                    }, 500);
+                },
+                error: function (err) {
+                    setTimeout(function () {
+                        $("#loader").fadeOut(300);
+                    }, 500);
+                }
+            });
+        }); var updatcontat=false;
+        $("#updatecontact").click(function () {
+            updatcontat = !!$("#updatecontact").is(':checked');
+            console.log(updatcontat)
+        })
+        $('#sendsmsmasse').click(function () {
+            $('#loader').show();
+            jsonObj = [];
+            $("#contact_list>tbody input[type=checkbox]:checked").each(function () {
+                var row = $(this).closest('tr')[0];
+                var name = row.cells[0].children[1].innerText;
+                var phone = row.cells[1].innerText;
+                var dossard = row.cells[2].innerText;
+                item = {};
+                item['name'] = name;
+                item['phone'] = phone;
+                item['dossard'] = dossard;
+                jsonObj.push(item)
+            });
+            console.log(JSON.stringify({data: jsonObj}))
+            $.ajax({
+                url: "{{ path('sendsmsmanyajax') }}",
+                type: "POST",
+                dataType: "JSON",
+                data: JSON.stringify({
+                    ob: jsonObj, message: $('#form_message').val(),updatecontact: updatcontat,
+                    sender: $('#form_sender').val(),
+                }),
+                success: function (data) {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                        $('#loader').fadeOut(300);
+                    }, 500);
+                },
+                error: function (err) {
+                    setTimeout(function () {
+                        $("#loader").fadeOut(300);
+                    }, 500);
+                }
+            });
+        });
+    })
+    var ExcelToJSON = function() {
+
+        this.parseExcel = function(file) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                workbook.SheetNames.forEach(function(sheetName) {
+                    // Here is your object
+                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    var json_object = JSON.stringify(XL_row_object);
+                    productList = JSON.parse(json_object);
+
+                    var rows = $("#contact_list");
+                    console.log(productList)
+                    $('#contact_list>tbody').html(" ");
+                    for (i = 0; i < productList.length; i++) {
+                        var columns = Object.values(productList[i])
+                /*        rows.eq(i).find('td.txtcode').text(columns[0]);
+                        rows.eq(i).find('td.txtphone').text(columns[1]);*/
+                        $("#contact_list>tbody:last").append("<tr><td><input class='checkbox hidden' type='checkbox' checked><span>"+columns[1]+"</span></td><td>"+columns[2]+"</td><td>"+columns[3]+"</td></tr>")
+                       // rows.append("<td>"+columns[2]+"</td>")
+                    }
+
+                })
+            };
+            reader.onerror = function(ex) {
+                console.log(ex);
+            };
+
+            reader.readAsBinaryString(file);
+
+
+
+        };
+    };
+    function removeRow(id) {
+        line = "#line_" + id;
+        $(line).remove();
+    }
+    function handleFileSelect(evt) {
+
+        var files = evt.target.files; // FileList object
+        var xl2json = new ExcelToJSON();
+        xl2json.parseExcel(files[0]);
+    }
+
+    document.getElementById('form_upload').addEventListener('change', handleFileSelect, false);
+</script>
+
+
+
+

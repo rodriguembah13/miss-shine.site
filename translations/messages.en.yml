@@ -71,6 +71,8 @@ dt:
     registrecommerce: Registre du commerce
     fax: Fax
     country: Pays
+    message: Message
+    recepteur: Recepteur
 sProcessing: "Traitement en cours..."
 sSearch: "Rechercher&nbsp;:"
 sLengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments"

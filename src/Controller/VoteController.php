@@ -65,7 +65,7 @@ class VoteController extends AbstractController
                 }
             ])
             ->add('createdAt',  DateTimeColumn::class, [
-                'format' => 'd-m-Y',
+                'format' => 'd-m-Y h:m',
                 'className'=>"text-center",
                // 'orderable' => false,
                 'searchable' => false,

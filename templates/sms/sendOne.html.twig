@@ -1,0 +1,64 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Sms Send{% endblock %}
+
+{% block body %}
+    <div id="loader"></div>
+    <div class="content">
+        <div class="row">
+        <div class="col-md-8">
+        <div class="card card-stats">
+
+            <div class="card-body ">
+
+                <form>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Sender</label>
+                                <input id="form_sender" type="text" class="form-control" placeholder="Sender name" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input id="form_phone" type="text" class="form-control" placeholder="675066919" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea class="form-control textarea" id="form_message"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="compteur"></span>
+                    <div class="row">
+                        <div class="update ml-auto mr-auto">
+                            <button type="button" class="btn btn-primary btn-round" id="sendsms">Send sms</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+         {#  <div class="col-md-4">
+                <div class="card card-stats">
+                    <div class="card-header">
+                        <div class="card-title">Solde</div>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                       <p id="solde">{{ customer.solde }}</p>
+                </div>
+            </div>
+        </div>#}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% include 'sms/javascript.html.twig' %}
+{% endblock %}

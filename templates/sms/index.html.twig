@@ -1,0 +1,29 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Sms Historique{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <div class="card card-stats">
+            <div class="card-header">
+                <a class="btn btn-dark pull-right" href="{{ path('smssendone') }}">Envoyer sms</a>
+                <a class="btn btn-primary pull-right" href="{{ path('smssendgroup') }}">Envoyer sms en masse</a>
+            </div>
+            <div class="card-body ">
+                <div class="table" id="table_historiquesms">
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+<script>
+    $(document).ready(function () {
+        $('#table_historiquesms').initDataTables({{ datatable_settings(datatable) }});
+    });
+    </script>
+{% endblock %}

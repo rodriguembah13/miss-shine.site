@@ -49,6 +49,10 @@ class Candidat
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $phone;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $position;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -268,6 +272,24 @@ class Candidat
     public function setProjet($projet)
     {
         $this->projet = $projet;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param mixed $phone
+     * @return Candidat
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
         return $this;
     }
 

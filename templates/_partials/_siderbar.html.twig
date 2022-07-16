@@ -59,6 +59,18 @@
             <li class="divider-bar">
 
             </li>
+       {#     <li{% if app.request.attributes.get( '_route' ) starts with 'configuration' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('smssendone') }}">
+                    <i class="nc-icon nc-settings"></i>
+                    <p>Envoyer sms</p>
+                </a>
+            </li>#}
+            <li{% if app.request.attributes.get( '_route' ) starts with 'sms' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('smshistorique') }}">
+                    <i class="nc-icon nc-settings"></i>
+                    <p>Historique sms</p>
+                </a>
+            </li>
             <li{% if app.request.attributes.get( '_route' ) starts with 'configuration' %} class="active"{% else %} class="" {% endif%}>
                 <a href="{{ path('configuration') }}">
                     <i class="nc-icon nc-settings"></i>
