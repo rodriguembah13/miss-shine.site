@@ -228,31 +228,35 @@ class SmsController extends AbstractController
         for ($i = 0; $i < sizeof($ob); ++$i) {
             $candidat=$this->candidatRepository->findOneBy(['dossard'=>$ob[$i]['dossard']]);
             if (!is_null($candidat)){
-                $sms = new Sms();
-                $phone=  $ob[$i]['phone'];
-                $sms->setTelephone($phone);
-                $message=$candidat->getFirstname()." Dossard". $candidat->getDossard() . $candidat->getDescription()."Vous occupez la".$candidat->getPosition() ." e position avec".$candidat->getVote()." votes.
+                if (!is_null($ob[$i]['phone'])){
+                    $phone=  $ob[$i]['phone'];
+                    $sms = new Sms();
+                    $sms->setTelephone($phone);
+                    $sms->setRecepteur($candidat->getFirstname());
+                    $message=$candidat->getFirstname()." Dossard". $candidat->getDossard() . $candidat->getDescription()."Vous occupez la".$candidat->getPosition() ." e position avec".$candidat->getVote()." votes.
             La premiere totalise 650 votes.vous pouvez encore atteindre cette place.Merci";
-                $sms->setMessage($message);
-                $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
-                $datasms = [
-                    'phone' => $phone,
-                    'message' => $message,
-                    'clientkey' => $this->getParameter('clientkey'),
-                    'clientsecret' => $this->getParameter('clientsecret')
-                ];
-                if ($body['updatecontact']){
-                    $candidat->setPhone($phone);
+                    $sms->setMessage($message);
+                    $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
+                    $datasms = [
+                        'phone' => $phone,
+                        'message' => $message,
+                        'clientkey' => $this->getParameter('clientkey'),
+                        'clientsecret' => $this->getParameter('clientsecret')
+                    ];
+                    if ($body['updatecontact']){
+                        $candidat->setPhone($phone);
+                    }
+                    $res = $this->clientsmsService->sendOne($datasms);
+                    if ($res['status'] === "SUCCESSFUL") {
+                        $sms->setStatus("SUCCESSFUL");
+                        $code = Response::HTTP_ACCEPTED;
+                    } else {
+                        $sms->setStatus("ECHEC");
+                        $code = Response::HTTP_BAD_REQUEST;
+                    }
+                    $em->persist($sms);
                 }
-                $res = $this->clientsmsService->sendOne($datasms);
-                if ($res['status'] === "SUCCESSFUL") {
-                    $sms->setStatus("SUCCESSFUL");
-                    $code = Response::HTTP_ACCEPTED;
-                } else {
-                    $sms->setStatus("ECHEC");
-                    $code = Response::HTTP_BAD_REQUEST;
-                }
-                $em->persist($sms);
+
             }
 
         }
