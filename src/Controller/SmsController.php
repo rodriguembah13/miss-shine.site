@@ -61,6 +61,7 @@ class SmsController extends AbstractController
      */
     public function index(Request $request): Response
     {
+       // dump($this->candidatRepository->findOneByLast());
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -225,6 +226,7 @@ class SmsController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $body = json_decode($request->getContent(), true);
         $ob = $body['ob'];
+        $votes=$this->candidatRepository->findOneByLast()->getVote();
         for ($i = 0; $i < sizeof($ob); ++$i) {
             $candidat=$this->candidatRepository->findOneBy(['dossard'=>$ob[$i]['dossard']]);
             if (!is_null($candidat)){
@@ -234,7 +236,7 @@ class SmsController extends AbstractController
                     $sms->setTelephone($phone);
                     $sms->setRecepteur($candidat->getFirstname());
                     $message=$candidat->getFirstname()." Dossard". $candidat->getDossard() . $candidat->getDescription()."Vous occupez la".$candidat->getPosition() ." e position avec".$candidat->getVote()." votes.
-            La premiere totalise 650 votes.vous pouvez encore atteindre cette place.Merci";
+            La premiere totalise ".$votes." votes.vous pouvez encore atteindre cette place.Merci";
                     $sms->setMessage($message);
                     $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
                     $datasms = [
