@@ -27,6 +27,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
+
 /**
  * @Route("/admin8796patr214vgfd/sms")
  */
@@ -38,6 +39,7 @@ class SmsController extends AbstractController
     private $clientsmsService;
     private $editionRepository;
     private $dataTableFactory;
+
     /**
      * SmsController constructor.
      * @param CandidatRepository $candidatRepository
@@ -46,13 +48,13 @@ class SmsController extends AbstractController
      * @param ModelSmsRepository $modelsmsRepository
      * @param SmsRepository $smsRepository
      */
-    public function __construct(DataTableFactory $dataTableFactory,EditionRepository $editionRepository,CandidatRepository $candidatRepository,ClientSms $clientsmsService,UserRepository $userRepository, ModelSmsRepository $modelsmsRepository, SmsRepository $smsRepository)
+    public function __construct(DataTableFactory $dataTableFactory, EditionRepository $editionRepository, CandidatRepository $candidatRepository, ClientSms $clientsmsService, UserRepository $userRepository, ModelSmsRepository $modelsmsRepository, SmsRepository $smsRepository)
     {
         $this->modelsmsRepository = $modelsmsRepository;
         $this->smsRepository = $smsRepository;
         $this->clientsmsService = $clientsmsService;
-        $this->candidatRepository=$candidatRepository;
-        $this->editionRepository=$editionRepository;
+        $this->candidatRepository = $candidatRepository;
+        $this->editionRepository = $editionRepository;
         $this->dataTableFactory = $dataTableFactory;
     }
 
@@ -61,7 +63,7 @@ class SmsController extends AbstractController
      */
     public function index(Request $request): Response
     {
-       // dump($this->candidatRepository->findOneByLast());
+        // dump($this->candidatRepository->findOneByLast());
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -93,14 +95,13 @@ class SmsController extends AbstractController
                 'searchable' => false,
                 'label' => 'dt.columns.createdat'
             ])
-            ->addOrderBy('idx',  DataTable::SORT_DESCENDING)
+            ->addOrderBy('idx', DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Sms::class,
                 'query' => function (QueryBuilder $builder) {
                     $builder
                         ->select('e')
-                        ->from(Sms::class, 'e')
-                    ;
+                        ->from(Sms::class, 'e');
                 },
             ])->handleRequest($request);
         if ($table->isCallback()) {
@@ -126,6 +127,27 @@ class SmsController extends AbstractController
         ]);
     }
     /**
+     * @Route("/updatecontact", name="updatecontact")
+     */
+    public function updateContact(): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        return $this->render('sms/updatecontact.html.twig', [
+            'title' => "Sms",
+            'groupes' => [
+                ['name' => 'Choisir type',
+                    'id' => 0],
+                ['name' => 'Depuis la base de donnée',
+                    'id' => 1],
+                ['name' => 'Apartir du fichier excel',
+                    'id' => 2],
+            ]
+        ]);
+    }
+    /**
      * @Route("/smssendgroup", name="smssendgroup")
      */
     public function smsGroupSms(): Response
@@ -134,20 +156,21 @@ class SmsController extends AbstractController
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
-       // $customer = $this->customerRepository->findOneBy(['user' => $user]);
+        // $customer = $this->customerRepository->findOneBy(['user' => $user]);
         return $this->render('sms/smssendgroup.html.twig', [
             'title' => "Sms Group",
             'customer' => "",
-            'groupes'=>[
-                ['name'=>'Choisir type',
-                    'id'=>0],
-                ['name'=>'Depuis la base de donnée',
-                    'id'=>1],
-                ['name'=>'Apartir du fichier excel',
-                    'id'=>2],
+            'groupes' => [
+                ['name' => 'Choisir type',
+                    'id' => 0],
+                ['name' => 'Depuis la base de donnée',
+                    'id' => 1],
+                ['name' => 'Apartir du fichier excel',
+                    'id' => 2],
             ]
         ]);
     }
+
     /**
      * @Route("/get/getsmssolde", name="getsmssolde", methods={"GET"})
      */
@@ -161,6 +184,7 @@ class SmsController extends AbstractController
             return new JsonResponse($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      * @Route("/uploadfileajax", name="uploadfileajax", methods={"POST","GET"})
      */
@@ -169,26 +193,28 @@ class SmsController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $body = json_decode($request->getContent(), true);
         $uploadFilename = $request->files->get('file');
-     //   $spreadsheet = $reader->load($uploadFilename);
+        //   $spreadsheet = $reader->load($uploadFilename);
         return new JsonResponse($body, 200);
     }
+
     /**
      * @Route("/getcontactajax", name="getcontactajax", methods={"POST","GET"})
      */
     public function getcontactajax(Request $request): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
-        $contacts=[];
-        foreach ($this->candidatRepository->findAll() as $candidat){
-            $contacts[]=[
-              'id'=>$candidat->getId(),
-              'name'=>$candidat->getFirstname(),
-              'phone'=>$candidat->getPhone(),
-                'dossard'=>$candidat->getDossard(),
-           ];
+        $contacts = [];
+        foreach ($this->candidatRepository->findAll() as $candidat) {
+            $contacts[] = [
+                'id' => $candidat->getId(),
+                'name' => $candidat->getFirstname(),
+                'phone' => $candidat->getPhone(),
+                'dossard' => $candidat->getDossard(),
+            ];
         }
         return new JsonResponse($contacts, 200);
     }
+
     /**
      * @Route("/sendsmsajax", name="sendsmsajax", methods={"GET"})
      */
@@ -199,25 +225,26 @@ class SmsController extends AbstractController
         $sms->setTelephone($request->get('phone'));
         $sms->setMessage($request->get('message'));
         $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
-        $datasms=[
-            'phone'=>$request->get('phone'),
-            'message'=>$request->get('message'),
-            'clientkey'=>$this->getParameter('clientkey'),
-            'clientsecret'=>$this->getParameter('clientsecret')
+        $datasms = [
+            'phone' => $request->get('phone'),
+            'message' => $request->get('message'),
+            'clientkey' => $this->getParameter('clientkey'),
+            'clientsecret' => $this->getParameter('clientsecret')
         ];
 
-        $res= $this->clientsmsService->sendOne($datasms);
-        if ($res['status']==="SUCCESSFUL"){
+        $res = $this->clientsmsService->sendOne($datasms);
+        if ($res['status'] === "SUCCESSFUL") {
             $sms->setStatus("SUCCESSFUL");
-            $code=Response::HTTP_ACCEPTED;
-        }else{
+            $code = Response::HTTP_ACCEPTED;
+        } else {
             $sms->setStatus("ECHEC");
-            $code=Response::HTTP_BAD_REQUEST;
+            $code = Response::HTTP_BAD_REQUEST;
         }
         $em->persist($sms);
         $em->flush();
         return new JsonResponse($res, $code);
     }
+
     /**
      * @Route("/sendsmsmanyajax", name="sendsmsmanyajax", methods={"POST"})
      */
@@ -226,17 +253,17 @@ class SmsController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $body = json_decode($request->getContent(), true);
         $ob = $body['ob'];
-        $votes=$this->candidatRepository->findOneByLast()->getVote();
+        $votes = $this->candidatRepository->findOneByLast()->getVote();
         for ($i = 0; $i < sizeof($ob); ++$i) {
-            $candidat=$this->candidatRepository->findOneBy(['dossard'=>$ob[$i]['dossard']]);
-            if (!is_null($candidat)){
-                if (!is_null($ob[$i]['phone'])){
-                    $phone=  $ob[$i]['phone'];
+            $candidat = $this->candidatRepository->findOneBy(['dossard' => $ob[$i]['dossard']]);
+            if (!is_null($candidat)) {
+                if (!is_null($ob[$i]['phone'])) {
+                    $phone = $ob[$i]['phone'];
                     $sms = new Sms();
                     $sms->setTelephone($phone);
                     $sms->setRecepteur($candidat->getFirstname());
-                    $message=$candidat->getFirstname()." Dossard". $candidat->getDossard() . $candidat->getDescription()."Vous occupez la".$candidat->getPosition() ." e position avec".$candidat->getVote()." votes.
-            La premiere totalise ".$votes." votes.vous pouvez encore atteindre cette place.Merci";
+                    $message = $candidat->getFirstname() . " Dossard" . $candidat->getDossard() . $candidat->getDescription() . "Vous occupez la" . $candidat->getPosition() . " e position avec" . $candidat->getVote() . " votes.
+            La premiere totalise " . $votes . " votes.vous pouvez encore atteindre cette place.Merci";
                     $sms->setMessage($message);
                     $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
                     $datasms = [
@@ -245,7 +272,7 @@ class SmsController extends AbstractController
                         'clientkey' => $this->getParameter('clientkey'),
                         'clientsecret' => $this->getParameter('clientsecret')
                     ];
-                    if ($body['updatecontact']){
+                    if ($body['updatecontact']) {
                         $candidat->setPhone($phone);
                     }
                     $res = $this->clientsmsService->sendOne($datasms);
@@ -266,7 +293,34 @@ class SmsController extends AbstractController
 
         return new JsonResponse($ob, 200);
     }
-    function updatePhone(Candidat $candidat,$phone){
+
+    /**
+     * @Route("/updatecontactsmsajax", name="updatecontactsmsajax", methods={"POST"})
+     */
+    public function updatecontactsmsAjax(Request $request): JsonResponse
+    {
+        $em = $this->getDoctrine()->getManager();
+        $body = json_decode($request->getContent(), true);
+        $ob = $body['ob'];
+        for ($i = 0; $i < sizeof($ob); ++$i) {
+            $candidat = $this->candidatRepository->findOneBy(['dossard' => $ob[$i]['dossard']]);
+            if (!is_null($candidat)) {
+                if (!is_null($ob[$i]['phone'])) {
+                    $phone = $ob[$i]['phone'];
+                        $candidat->setPhone($phone);
+                   // $em->persist($sms);
+                    $em->flush();
+                }
+
+            }
+
+        }
+
+        return new JsonResponse($ob, 200);
+    }
+
+    function updatePhone(Candidat $candidat, $phone)
+    {
         $candidat->setPhone($phone);
     }
 }

@@ -25,7 +25,7 @@ class ClientSms
         $dtanexah = [
             "phone" => $phone,
             "message" => $data['message'],
-            "sender" => "Miss shine",
+            "sender" => "Miss ShineE",
             "clientkey" => $data['clientkey'],
             "clientsecret" =>$data['clientsecret']
         ];

@@ -16,7 +16,7 @@
                     success: function (data) {
                         for (i = 0; i < data.length; i++) {
                             var columns = Object.values(data[i])
-                            $("#contact_list>tbody:last").append("<tr><td><input class='checkbox hidden' type='checkbox' checked><span>"+columns[1]+"</span></td><td><input value='"+columns[2]+"'></td><td>"+columns[3]+"</td></tr>")
+                            $("#contact_list>tbody:last").append("<tr><td><input class='checkbox' type='checkbox' checked><span>"+columns[1]+"</span></td><td><input value='"+columns[2]+"'></td><td>"+columns[3]+"</td></tr>")
                         }
                         setTimeout(function () {
                             $("#overlay").fadeOut(300);
@@ -90,6 +90,40 @@
                 data: JSON.stringify({
                     ob: jsonObj, message: $('#form_message').val(),updatecontact: updatcontat,
                     sender: $('#form_sender').val(),
+                }),
+                success: function (data) {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                        $('#loader').fadeOut(300);
+                    }, 500);
+                },
+                error: function (err) {
+                    setTimeout(function () {
+                        $("#loader").fadeOut(300);
+                    }, 500);
+                }
+            });
+        });
+        $('#updatesmscontact').click(function () {
+            $('#loader').show();
+            jsonObj = [];
+            $("#contact_list>tbody input[type=checkbox]:checked").each(function () {
+                var row = $(this).closest('tr')[0];
+                var name = row.cells[0].children[1].innerText;
+                var phone = row.cells[1].children[0].value;
+                var dossard = row.cells[2].innerText;
+                item = {};
+                item['name'] = name;
+                item['phone'] = phone;
+                item['dossard'] = dossard;
+                jsonObj.push(item)
+            });
+            $.ajax({
+                url: "{{ path('updatecontactsmsajax') }}",
+                type: "POST",
+                dataType: "JSON",
+                data: JSON.stringify({
+                    ob: jsonObj
                 }),
                 success: function (data) {
                     setTimeout(function () {
