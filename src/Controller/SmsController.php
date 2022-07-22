@@ -255,12 +255,13 @@ class SmsController extends AbstractController
                         $code = Response::HTTP_BAD_REQUEST;
                     }
                     $em->persist($sms);
+                    $em->flush();
                 }
 
             }
 
         }
-        $em->flush();
+
         return new JsonResponse($ob, 200);
     }
     function updatePhone(Candidat $candidat,$phone){
