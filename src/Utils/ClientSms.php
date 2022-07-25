@@ -63,6 +63,7 @@ class ClientSms
             "message" => $data['message'],
             "sender" => "Miss ShineE",
             "clientkey" => $data['clientkey'],
+            "sizephone"=>$data['sizephone'],
             "clientsecret" =>$data['clientsecret']
         ];
         $jsdata = json_encode($dtanexah);
@@ -86,7 +87,6 @@ class ClientSms
                 "phone" => $phone,
                 "message" => $exception->getMessage()
             ];
-            //  return $res;
         }
 
         return $bodyarray;

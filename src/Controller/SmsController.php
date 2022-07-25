@@ -342,7 +342,7 @@ class SmsController extends AbstractController
         ];
         $res = $this->clientsmsService->sendMany($datasms);
 
-        if ($res['status'] === "SUCCESSFUL") {
+     if ($res['status'] === "SUCCESSFUL") {
             $code = Response::HTTP_ACCEPTED;
             array_map(function ($item)use ($message,$em){
                 if (!is_null($item['phone'])) {
@@ -359,6 +359,7 @@ class SmsController extends AbstractController
 
         } else {
             $code = Response::HTTP_BAD_REQUEST;
+
         }
 
         return new JsonResponse($res, $code);
