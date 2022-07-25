@@ -361,7 +361,7 @@ class SmsController extends AbstractController
             $code = Response::HTTP_BAD_REQUEST;
         }
 
-        return new JsonResponse($phones, $code);
+        return new JsonResponse($res, $code);
     }
 
     /**
