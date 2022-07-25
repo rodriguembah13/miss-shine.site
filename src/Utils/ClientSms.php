@@ -55,4 +55,40 @@ class ClientSms
 
         return $bodyarray;
     }
+    public function sendMany($data){
+        $endpoint = "/api/smssendbulk";
+        $phone=$data['phone'];
+        $dtanexah = [
+            "phone" => $phone,
+            "message" => $data['message'],
+            "sender" => "Miss ShineE",
+            "clientkey" => $data['clientkey'],
+            "clientsecret" =>$data['clientsecret']
+        ];
+        $jsdata = json_encode($dtanexah);
+        $bodyarray=[];
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => $jsdata
+        ];
+        try {
+            $response = $this->client->post($endpoint, $options);
+            $body = $response->getBody();
+            $bodyarray = json_decode($body->getContents(), true);
+
+        } catch (\Exception $exception) {
+            $res = [
+                "status" => "FAILED",
+                'code'=>500,
+                "phone" => $phone,
+                "message" => $exception->getMessage()
+            ];
+            //  return $res;
+        }
+
+        return $bodyarray;
+    }
 }

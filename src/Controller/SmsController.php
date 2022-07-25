@@ -81,14 +81,14 @@ class SmsController extends AbstractController
                 'field' => 'e.message',
                 'className' => "text-center"
             ])
-            ->add('phone', TextColumn::class, [
+            ->add('telephone', TextColumn::class, [
                 'className' => "text-center",
-                'field' => 'e.phone',
+                'field' => 'e.telephone',
                 'label' => 'dt.columns.phone',
 
             ])
             ->add('createdAt', DateTimeColumn::class, [
-                'format' => 'd-m-Y h:m',
+                'format' => 'd-m-Y h:m:s',
                 'className' => "text-center",
                 'field' => 'e.createdAt',
                 //'orderable' => false,
@@ -108,7 +108,7 @@ class SmsController extends AbstractController
             return $table->getResponse();
         }
         return $this->render('sms/index.html.twig', [
-            'title' => "Sms",
+            'title' => "Historique Sms",
             'datatable' => $table
         ]);
     }
@@ -123,9 +123,10 @@ class SmsController extends AbstractController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
         return $this->render('sms/sendOne.html.twig', [
-            'title' => "Sms",
+            'title' => "Envoyer Sms",
         ]);
     }
+
     /**
      * @Route("/updatecontact", name="updatecontact")
      */
@@ -147,6 +148,29 @@ class SmsController extends AbstractController
             ]
         ]);
     }
+
+    /**
+     * @Route("/bulksms", name="bulksms")
+     */
+    public function bulkSMS(): Response
+    {
+        $user = $this->getUser();
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+        return $this->render('sms/bulksms.html.twig', [
+            'title' => "Bulk Sms",
+            'groupes' => [
+                ['name' => 'Choisir type',
+                    'id' => 0],
+                ['name' => 'Depuis la base de donnée',
+                    'id' => 1],
+                ['name' => 'Apartir du fichier excel',
+                    'id' => 2],
+            ]
+        ]);
+    }
+
     /**
      * @Route("/smssendgroup", name="smssendgroup")
      */
@@ -295,6 +319,52 @@ class SmsController extends AbstractController
     }
 
     /**
+     * @Route("/sendsmsbulkajax", name="sendsmsbulkajax", methods={"POST"})
+     */
+    public function sendSmsBulkAjax(Request $request): JsonResponse
+    {
+        $em = $this->getDoctrine()->getManager();
+        $body = json_decode($request->getContent(), true);
+        $ob = $body['ob'];
+        $phones = "";
+        $message = $body['message'];
+        for ($i = 0; $i < sizeof($ob); ++$i) {
+            if (!is_null($ob[$i]['phone'])) {
+                $phones .= $ob[$i]['phone'] . ",";
+            }
+        }
+        $datasms = [
+            'phone' => $phones,
+            'message' => $message,
+            'sizephone' => count($ob),
+            'clientkey' => $this->getParameter('clientkey'),
+            'clientsecret' => $this->getParameter('clientsecret')
+        ];
+        $res = $this->clientsmsService->sendMany($datasms);
+
+        if ($res['status'] === "SUCCESSFUL") {
+            $code = Response::HTTP_ACCEPTED;
+            array_map(function ($item)use ($message,$em){
+                if (!is_null($item['phone'])) {
+                    $sms = new Sms();
+                    $sms->setTelephone($item['phone']);
+                    $sms->setRecepteur($item['name']);
+                    $sms->setMessage($message);
+                    $sms->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Brazzaville')));
+                    $sms->setStatus("SUCCESSFUL");
+                    $em->persist($sms);
+                }
+            },$ob);
+            $em->flush();
+
+        } else {
+            $code = Response::HTTP_BAD_REQUEST;
+        }
+
+        return new JsonResponse($phones, $code);
+    }
+
+    /**
      * @Route("/updatecontactsmsajax", name="updatecontactsmsajax", methods={"POST"})
      */
     public function updatecontactsmsAjax(Request $request): JsonResponse
@@ -307,8 +377,8 @@ class SmsController extends AbstractController
             if (!is_null($candidat)) {
                 if (!is_null($ob[$i]['phone'])) {
                     $phone = $ob[$i]['phone'];
-                        $candidat->setPhone($phone);
-                   // $em->persist($sms);
+                    $candidat->setPhone($phone);
+                    // $em->persist($sms);
                     $em->flush();
                 }
 

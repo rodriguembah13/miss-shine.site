@@ -1,0 +1,91 @@
+{% extends 'baseback.html.twig' %}
+{% block title %}
+
+{% endblock %}
+{% block body %}
+    <div id="loader"></div>
+    <div class="content">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-stats">
+                    <div class="card-header">
+                        <div class="card-title">Bulk sms</div>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-control textarea" id="form_message"></textarea>
+                        </div>
+                        <span id="compteur"></span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="update ml-auto mr-auto">
+                                <button type="button" class="btn btn-primary btn-round" id="sendsmsbulk">Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-stats">
+                    <div class="card-header">
+                        <div class="card-title">Contact</div>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Importer numero</label>
+                            <input type="file" name="file" id="file_upload">
+                        </div>
+                        <table class="table table-bordered" id="bulk_list">
+                            <thead>
+                            <tr><th>Nom</th><th>Phone</th></tr>
+                            </thead>
+                            <tbody></tbody>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">importer Excel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="form_upload" method="post" action="#" enctype="multipart/form-data">
+                    <div class="modal-body">
+
+                        <input type="hidden" name="_method" value="GET">
+                        <input type="file" name="file">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        {#   <button type="submit" class="btn btn-primary">Save changes</button>#}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('backend/js/jszip.js') }}"></script>
+    <script src="{{ asset('backend/js/xlsx.min.js') }}"></script>
+    {% include 'sms/javascript.html.twig' %}
+{% endblock %}
+
+
+
+
+

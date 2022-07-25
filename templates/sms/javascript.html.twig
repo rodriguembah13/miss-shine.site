@@ -104,6 +104,38 @@
                 }
             });
         });
+        $('#sendsmsbulk').click(function () {
+            $('#loader').show();
+            jsonObj = [];
+            $("#bulk_list>tbody input[type=checkbox]:checked").each(function () {
+                var row = $(this).closest('tr')[0];
+                var name = row.cells[0].children[1].innerText;
+                var phone = row.cells[1].children[0].value;
+                item = {};
+                item['name'] = name;
+                item['phone'] = phone;
+                jsonObj.push(item)
+            });
+            $.ajax({
+                url: "{{ path('sendsmsbulkajax') }}",
+                type: "POST",
+                dataType: "JSON",
+                data: JSON.stringify({
+                    ob: jsonObj, message: $('#form_message').val()
+                }),
+                success: function (data) {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                        $('#loader').fadeOut(300);
+                    }, 500);
+                },
+                error: function (err) {
+                    setTimeout(function () {
+                        $("#loader").fadeOut(300);
+                    }, 500);
+                }
+            });
+        });
         $('#updatesmscontact').click(function () {
             $('#loader').show();
             jsonObj = [];
@@ -178,18 +210,58 @@
 
         };
     };
+    var ExcelToJSONPHONE = function() {
+
+        this.parseExcel = function(file) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                workbook.SheetNames.forEach(function(sheetName) {
+                    // Here is your object
+                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    var json_object = JSON.stringify(XL_row_object);
+                    productList = JSON.parse(json_object);
+
+                    var rows = $("#bulk_list");
+                    console.log(productList)
+                    $('#bulk_list>tbody').html(" ");
+                    for (i = 0; i < productList.length; i++) {
+                        var columns = Object.values(productList[i])
+                        $("#bulk_list>tbody:last").append("<tr><td><input class='checkbox' type='checkbox' checked><span>"+columns[1]+"</span></td><td><input value='"+columns[2]+"'></td></tr>")
+                    }
+
+                })
+            };
+            reader.onerror = function(ex) {
+                console.log(ex);
+            };
+
+            reader.readAsBinaryString(file);
+
+
+
+        };
+    };
     function removeRow(id) {
         line = "#line_" + id;
         $(line).remove();
     }
     function handleFileSelect(evt) {
-
         var files = evt.target.files; // FileList object
         var xl2json = new ExcelToJSON();
         xl2json.parseExcel(files[0]);
     }
-
+    function handleFileSelectphone(evt) {
+        var files = evt.target.files; // FileList object
+        var xl2json = new ExcelToJSONPHONE();
+        xl2json.parseExcel(files[0]);
+    }
     document.getElementById('form_upload').addEventListener('change', handleFileSelect, false);
+    document.getElementById('file_upload').addEventListener('change', handleFileSelectphone, false);
 </script>
 
 

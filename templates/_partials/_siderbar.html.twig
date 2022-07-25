@@ -59,15 +59,15 @@
             <li class="divider-bar">
 
             </li>
-       {#     <li{% if app.request.attributes.get( '_route' ) starts with 'configuration' %} class="active"{% else %} class="" {% endif%}>
-                <a href="{{ path('smssendone') }}">
-                    <i class="nc-icon nc-settings"></i>
-                    <p>Envoyer sms</p>
+         <li{% if app.request.attributes.get( '_route' ) starts with 'bulksms' %} class="active"{% else %} class="" {% endif%}>
+                <a href="{{ path('bulksms') }}">
+                    <i class="nc-icon nc-email-85"></i>
+                    <p>Sms en masse</p>
                 </a>
-            </li>#}
+            </li>
             <li{% if app.request.attributes.get( '_route' ) starts with 'sms' %} class="active"{% else %} class="" {% endif%}>
                 <a href="{{ path('smshistorique') }}">
-                    <i class="nc-icon nc-settings"></i>
+                    <i class="nc-icon nc-bullet-list-67"></i>
                     <p>Historique sms</p>
                 </a>
             </li>
