@@ -305,8 +305,8 @@ class DefaultController extends AbstractController
         $vote->setNombreVote($qtevote);
         $vote->setMonaie("XAF");
         $vote->setStatus("PENDING");
-        $vote->setCreatedAt(new \DateTime('now'));
-        $vote->setUpdatedAt(new \DateTime('now'));
+        $vote->setCreatedAt(new \DateTime('now',new \DateTimeZone('Africa/Douala')));
+        $vote->setUpdatedAt(new \DateTime('now',new \DateTimeZone('Africa/Douala')));
         $entityManager->persist($vote);
         $entityManager->flush();
     }
