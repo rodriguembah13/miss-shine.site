@@ -188,6 +188,7 @@ class BilletController extends AbstractController
         // dump($request);
         //die("200");
         $initprice = $request->get("initprice");
+        $quantite = $request->get("quantite");
         $region = $request->get("region");
         $firstname = $request->get("firstname");
         $lastname = $request->get("lastname");
@@ -211,7 +212,7 @@ class BilletController extends AbstractController
         $key = $this->params->get('paymookey');
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
-            'amount' => $initprice,
+            'amount' => $initprice*$quantite,
             'currency_code' => 'XAF',
             'code' => 'CM',
             'lang' => 'en',
@@ -260,8 +261,8 @@ class BilletController extends AbstractController
     public function notifyurlbilleterie(Request $request): Response
     {
         $status = $_POST['status'];
-        $this->logger->error("----------------------- notify Billeterie" . $request->get('billet'));
-        $this->logger->error("----------------------- notify Billeterie" . $status);
+        $this->logger->debug("----------------------- notify Billeterie" . $request->get('billet'));
+        $this->logger->debug("----------------------- notify Billeterie" . $status);
         $candidat_ = $this->candidatRepository->find($request->get('candidat'));
 
         if (strtolower($status) === "success") {

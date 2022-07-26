@@ -6,6 +6,7 @@
     <div class="wrapper bgded overlay" style="background-image:url({{ asset('images/imagemiss.jpg') }});">
         <div class="page-title text-center wow fadeInRightBig"><h1 class="heading">Billeteries</h1></div>
     </div>
+    <input type="hidden" value="{{ initprice }}" id="initprice">
     <div class="row pt-20" style="background-color: #f9f9f9">
         <div class="col-xl-8 offset-xl-2">
             <div class="sec-title text-center black wow bounceIn">
@@ -66,9 +67,15 @@
                                     </select>#}
                                    {# <select name="candidat" class="js-data-example-ajax"></select>#}
                                 </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="control-label" for="quantite">
+                                        Nombre de billets:</label>
+                                    <input min="1" type="number" class="form-control" name="quantite"
+                                           id="quantite">
+                                </div>
                             </div>
                             <div class="row">
-                                <button class="btn btn-primary float-right">Valider</button>
+                                <button class="btn btn-primary float-right">Payez <i id="ttotal"></i></button>
                             </div>
 
                         </form>
@@ -107,6 +114,12 @@
                     // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
                 }
             });
+            $('#ttotal').text($('#initprice').val())
+            $('#quantite').val(1)
+            $('#quantite').change(function () {
+                var total=$('#initprice').val()*$(this).val()
+                $('#ttotal').text(total)
+            })
         });
     </script>
 {% endblock %}
