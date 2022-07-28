@@ -115,7 +115,18 @@
                                 <a href="{{ path('boutique') }}" {% if app.request.attributes.get( '_route' ) starts with 'boutique' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Boutique</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ path('service') }}" {% if app.request.attributes.get( '_route' ) starts with 'service' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Services</a>
+                                <a href="#" {% if app.request.attributes.get( '_route' ) starts with 'service' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Services</a>
+                                <ul class="dropdown-menu">
+                                    <li class="">
+                                        <a href="{{ path('service_formation') }}" {% if app.request.attributes.get( '_route' ) starts with 'formation' %} class="active"{% else %} class="" {% endif%}>Formation</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="{{ path('service_developpement') }}" {% if app.request.attributes.get( '_route' ) starts with 'service' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Developpement personnel</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="{{ path('service_entreprenariat') }}" {% if app.request.attributes.get( '_route' ) starts with 'service' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Entreprenariat</a>
+                                    </li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ path('billeteries') }}" {% if app.request.attributes.get( '_route' ) starts with 'billeterie' %} class="nav-link active"{% else %} class="nav-link" {% endif%}>Billeterie</a>

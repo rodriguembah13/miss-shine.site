@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 /**
- * @Route("/admin8796patr214vgfd/service")
+ * @Route("/service")
  */
 class ServiceController extends AbstractController
 {
@@ -45,6 +45,33 @@ class ServiceController extends AbstractController
     public function index(): Response
     {
         return $this->render('service/index.html.twig', [
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
+        ]);
+    }
+    /**
+     * @Route("/formation", name="service_formation")
+     */
+    public function formation(): Response
+    {
+        return $this->render('service/formation.html.twig', [
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
+        ]);
+    }
+    /**
+     * @Route("/developpement", name="service_developpement")
+     */
+    public function developpement(): Response
+    {
+        return $this->render('service/developpement.html.twig', [
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
+        ]);
+    }
+    /**
+     * @Route("/entreprenariat", name="service_entreprenariat")
+     */
+    public function entreprenariat(): Response
+    {
+        return $this->render('service/entreprenariat.html.twig', [
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }

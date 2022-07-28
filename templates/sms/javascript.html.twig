@@ -34,11 +34,21 @@
         $("#form_message").keyup(function () {
             var nbreCa=$(this).val().length;
             var nbreCa=160-nbreCa;
+            var a = $(this).val().length;
+            var b = 160;
+            var rem = a%b;
+            var quo = (a-rem)/b;
+            //  console.log('Quotient = ',quo,'Remainder = ',rem);
+            if (rem>0){
+                quo+=1;
+            }
+            var nbreChar=$(this).val().length;
             var nbreMots=$(this).val().trim().split(' ').length;
             if ($(this).val()===' '){
                 nbreMots=0;
             }
-            var msg=' '+nbreMots+'mot(s) '+nbreCa+' Caractere(s) restant';
+            // var msg=' '+nbreMots+'mot(s) '+nbreCa+' Caractere(s) restant';
+            var msg=' '+nbreChar+'Caractere(s) '+quo+' Sms(s)';
             $("#compteur").text(msg);
         })
         $('#sendsms').click(function () {
@@ -53,11 +63,13 @@
                     sender: $('#form_sender').val(),
                 },
                 success: function (data) {
+                    showNotification('top','right','Success! sms envoyés avec success','primary');
                     setTimeout(function () {
                         $("#loader").fadeOut(300);
                     }, 500);
                 },
                 error: function (err) {
+                    showNotification('top','right','Echec ! une erreur est survenue','danger');
                     setTimeout(function () {
                         $("#loader").fadeOut(300);
                     }, 500);
@@ -92,12 +104,14 @@
                     sender: $('#form_sender').val(),
                 }),
                 success: function (data) {
+                    showNotification('top','right','Success! sms envoyés avec success','primary');
                     setTimeout(function () {
                         $("#overlay").fadeOut(300);
                         $('#loader').fadeOut(300);
                     }, 500);
                 },
                 error: function (err) {
+                    showNotification('top','right','Echec ! une erreur est survenue','danger');
                     setTimeout(function () {
                         $("#loader").fadeOut(300);
                     }, 500);
@@ -105,6 +119,7 @@
             });
         });
         $('#sendsmsbulk').click(function () {
+
             $('#loader').show();
             jsonObj = [];
             $("#bulk_list>tbody input[type=checkbox]:checked").each(function () {
@@ -124,12 +139,14 @@
                     ob: jsonObj, message: $('#form_message').val()
                 }),
                 success: function (data) {
+                    showNotification('top','right','Success! sms envoyés avec success','primary');
                     setTimeout(function () {
                         $("#overlay").fadeOut(300);
                         $('#loader').fadeOut(300);
                     }, 500);
                 },
                 error: function (err) {
+                    showNotification('top','right','Echec ! une erreur est survenue','danger');
                     setTimeout(function () {
                         $("#loader").fadeOut(300);
                     }, 500);
@@ -170,7 +187,24 @@
                 }
             });
         });
+
     })
+    showNotification= function(from, align,msg,color) {
+        // = 'primary';
+
+        $.notify({
+            icon: "nc-icon nc-bell-55",
+            message: msg
+
+        }, {
+            type: color,
+            timer: 8000,
+            placement: {
+                from: from,
+                align: align
+            }
+        });
+    }
     var ExcelToJSON = function() {
 
         this.parseExcel = function(file) {
