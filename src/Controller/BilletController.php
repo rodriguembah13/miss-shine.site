@@ -262,7 +262,8 @@ class BilletController extends AbstractController
     {
         $status = $_POST['status'];
         $this->logger->debug("----------------------- notify Billeterie" . $request->get('billet'));
-        $this->logger->debug("----------------------- notify Billeterie" . $status);
+        $this->logger->info("----------------------- notify Billeterie" . $status);
+        $this->logger->info("----------------------- notify Name" . $_POST['name']);
         $candidat_ = $this->candidatRepository->find($request->get('candidat'));
 
         if (strtolower($status) === "success") {
