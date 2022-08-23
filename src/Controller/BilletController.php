@@ -189,7 +189,8 @@ class BilletController extends AbstractController
         //die("200");
         $initprice = $request->get("initprice");
         $quantite = $request->get("quantite");
-        $region = $request->get("region");
+        //$region = $request->get("region");
+        $region="Finale nationale";
         $firstname = $request->get("firstname");
         $lastname = $request->get("lastname");
         $email = $request->get("email");
