@@ -54,14 +54,15 @@ class DefaultController extends AbstractController
     public function index(): Response
     {
         $configuration = $this->configRepository->findOneByLast();
+        $edition=$this->editionrepository->findOneByStatuspulie();
         if ($configuration->getMaintenance()) {
             return $this->render('default/maintenance.html.twig', [
-                'candidats' => $this->candidatRepository->findAll(),
+                'candidats' => $this->candidatRepository->findByEdition($edition),
 
             ]);
         }
         return $this->render('default/index.html.twig', [
-            'candidats' => $this->candidatRepository->findAll(),
+            'candidats' => $this->candidatRepository->findByEdition($edition),
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -85,8 +86,9 @@ class DefaultController extends AbstractController
      */
     public function candidats(): Response
     {
+        $edition=$this->editionrepository->findOneByStatuspulie();
         return $this->render('default/candidats.html.twig', [
-            'candidats' => $this->candidatRepository->findAll(),
+            'candidats' => $this->candidatRepository->findByEdition($edition),
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
