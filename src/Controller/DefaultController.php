@@ -283,17 +283,19 @@ class DefaultController extends AbstractController
         $val = 0;
         if ($votes == 1) {
             $val = 100;
-        } elseif ($votes == 5) {
+        } elseif ($votes == 2) {
+            $val = 200;
+        } elseif ($votes == 3) {
             $val = 300;
-        } elseif ($votes == 7) {
+        } elseif ($votes == 5) {
             $val = 500;
-        } elseif ($votes == 15) {
+        }elseif ($votes == 12) {
             $val = 1000;
         }
-        elseif ($votes == 60) {
+        elseif ($votes == 65) {
             $val = 5000;
         }
-        elseif ($votes == 125) {
+        elseif ($votes == 140) {
             $val = 10000;
         }
         return $val;
