@@ -514,7 +514,7 @@ $this->generateRang();
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
-            'redirectUrl' => $current_url . '?orderpay=' . $reference, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            'redirectUrl' => $notify_url, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
             'callbackUrl' => $notify_url,
             'callbackOnFailureUrl' => $notify_url,
             'ref_payment'=>$reference,

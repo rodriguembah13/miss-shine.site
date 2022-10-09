@@ -36,4 +36,21 @@ class VoteRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
             ;
     }
+    public function findByDay($datebegin,$date_end,$id)
+    {
+        $value=date('Y-m-d');
+        $value2=date('Y-m-d');
+        $date = date_create($value2);
+        date_add($date, date_interval_create_from_date_string("1 days"));
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.createdAt BETWEEN :dateBegin AND :dateEnd')
+            ->andWhere('f.candidat = :c')
+            ->setParameter('dateBegin', $datebegin)
+            ->setParameter('dateEnd', $date_end)
+            ->setParameter('c',$id)
+            ->orderBy('f.fixtureid', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
