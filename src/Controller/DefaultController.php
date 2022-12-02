@@ -36,7 +36,7 @@ class DefaultController extends AbstractController
      * @param $candidatRepository
      * @param $editionrepository
      */
-    public function __construct(FlutterwaveService $flutterwaveService,PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
+    public function __construct(FlutterwaveService $flutterwaveService, PartenaireRepository $partenaireRepository, ConfigurationRepository $configRepository, VoteRepository $voteRepository, ParameterBagInterface $paramConverter, LoggerInterface $logger, CandidatRepository $candidatRepository, EditionRepository $editionrepository)
     {
         $this->candidatRepository = $candidatRepository;
         $this->editionrepository = $editionrepository;
@@ -45,7 +45,7 @@ class DefaultController extends AbstractController
         $this->voteRepository = $voteRepository;
         $this->configRepository = $configRepository;
         $this->partenaireRepository = $partenaireRepository;
-        $this->flutterwaveService=$flutterwaveService;
+        $this->flutterwaveService = $flutterwaveService;
     }
 
     /**
@@ -54,7 +54,7 @@ class DefaultController extends AbstractController
     public function index(): Response
     {
         $configuration = $this->configRepository->findOneByLast();
-        $edition=$this->editionrepository->findOneByStatuspulie();
+        $edition = $this->editionrepository->findOneByStatuspulie();
         if ($configuration->getMaintenance()) {
             return $this->render('default/maintenance.html.twig', [
                 'candidats' => $this->candidatRepository->findByEdition($edition),
@@ -86,7 +86,7 @@ class DefaultController extends AbstractController
      */
     public function candidats(): Response
     {
-        $edition=$this->editionrepository->findOneByStatuspulie();
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('default/candidats.html.twig', [
             'candidats' => $this->candidatRepository->findByEdition($edition),
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
@@ -158,13 +158,10 @@ class DefaultController extends AbstractController
             'channels' => 'ALL',
         );
         $this->logger->error("LOGGER-----" . json_encode($data));
-        // $this->createVote($candidat,$client_votes);
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
-        // dump($response);
-        //  $this->logger->info($response);
         if ($response['code'] == "201") {
-            $this->createVote($candidat, $client_votes);
+            $this->createVote($candidat, $client_votes,$reference);
             $url = $response["data"]["payment_url"];
             $link_array = explode('/', $url);
             return $this->redirect($url);
@@ -237,7 +234,7 @@ class DefaultController extends AbstractController
         $client = new ClientServer();
         $response = $client->postfinal($endpoints, $data);
         if ($response['code'] == "201") {
-            $this->createVote($candidat, $client_votes);
+            $this->createVote($candidat, $client_votes,$reference);
             $url = $response["data"]["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
@@ -272,7 +269,7 @@ class DefaultController extends AbstractController
             $val = 30;
         } elseif ($votes == 270) {
             $val = 50;
-        }elseif ($votes == 530) {
+        } elseif ($votes == 530) {
             $val = 100;
         }
         return $val;
@@ -289,28 +286,27 @@ class DefaultController extends AbstractController
             $val = 300;
         } elseif ($votes == 5) {
             $val = 500;
-        }elseif ($votes == 12) {
+        } elseif ($votes == 12) {
             $val = 1000;
-        }
-        elseif ($votes == 65) {
+        } elseif ($votes == 65) {
             $val = 5000;
-        }
-        elseif ($votes == 140) {
+        } elseif ($votes == 140) {
             $val = 10000;
         }
         return $val;
     }
 
-    protected function createVote(Candidat $candidat, $qtevote)
+    protected function createVote(Candidat $candidat, $qtevote,$reference)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $vote = new Vote();
+        $vote->setReference($reference);
         $vote->setCandidat($candidat);
         $vote->setNombreVote($qtevote);
         $vote->setMonaie("XAF");
         $vote->setStatus("PENDING");
-        $vote->setCreatedAt(new \DateTime('now',new \DateTimeZone('Africa/Douala')));
-        $vote->setUpdatedAt(new \DateTime('now',new \DateTimeZone('Africa/Douala')));
+        $vote->setCreatedAt(new \DateTime('now', new \DateTimeZone('Africa/Douala')));
+        $vote->setUpdatedAt(new \DateTime('now', new \DateTimeZone('Africa/Douala')));
         $entityManager->persist($vote);
         $entityManager->flush();
     }
@@ -338,7 +334,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/notifyurl/ajax", name="notifyurlajax", methods={"POST","GET"})
+     * @Route("/notifyurlcinetpay/ajax", name="notifyurlajax", methods={"POST","GET"})
      */
     public function notifyurl(Request $request): Response
     {
@@ -391,7 +387,7 @@ class DefaultController extends AbstractController
                 "status" => "REFUSED"
             ];
             return new JsonResponse($array, 200);
-        }else{
+        } else {
             $array = [
                 "status" => "REFUSED"
             ];
@@ -401,34 +397,39 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/notifyurlpaymoo/ajax", name="notifyurlpaymooajax", methods={"POST","GET"})
+     * @Route("/notifyurl/ajax", name="notifyurlpaymooajax", methods={"POST","GET"})
      */
     public function notifyurlpaymoo(Request $request): Response
     {
-
-        $data=json_decode($request->getContent(), true);
+        $res = json_decode($request->getContent(), true);
+        $reference = $res['item_ref'];
+        $this->logger->error($reference);
         $status = $_POST['status'];
-        $this->logger->error("----------------------- notify call". $request->get('vote'));
-        $this->logger->error("----------------------- notify call".$status);
-        $vote_ = $this->voteRepository->find($request->get('vote'));
-
-       // if ($vote_->getStatus() === "PENDING") {
-            if (strtolower($status) === "success") {
-                $this->updateVote($vote_, 'ACCEPTED');
-            } elseif (strtolower($status) === "failed") {
-                $this->updateVote($vote_, 'REFUSED');
+        $this->logger->error("----------------------- notify call" . $request->get('vote'));
+        $this->logger->error("----------------------- notify call" . $status);
+        // $vote_ = $this->voteRepository->find($request->get('vote'));
+        $vote_ = $this->voteRepository->findOneBy(['reference' => $reference]);
+        if ($status == "Success") {
+            if ($vote_->getStatus() === "PENDING") {
+                if (strtolower($status) === "success") {
+                    $this->updateVote($vote_, 'ACCEPTED');
+                } elseif (strtolower($status) === "failed") {
+                    $this->updateVote($vote_, 'REFUSED');
+                }
             }
-     //   }
+        }
+
         return new JsonResponse($status, 200);
     }
+
     /**
      * @Route("/notifyurlflutter/ajax", name="notifyurlflutterajax", methods={"POST","GET"})
      */
     public function notifyurlflutter(Request $request)
     {
         $this->logger->error("----------------------- notify call");
-        $data=json_decode($request->getContent(), true);
-        $this->logger->error("----------------------- notify call". $request->get('vote'));
+        $data = json_decode($request->getContent(), true);
+        $this->logger->error("----------------------- notify call" . $request->get('vote'));
         if (!empty($request->get('status'))) {
             $status = $request->get('status');
             $vote_ = $this->voteRepository->find($request->get('vote'));
@@ -439,26 +440,28 @@ class DefaultController extends AbstractController
                     $this->updateVote($vote_, 'REFUSED');
                 }
             }
-        }else{
+        } else {
             $status = $request->get('status');
         }
-$this->generateRang();
+        $this->generateRang();
         return $this->redirectToRoute('home');
     }
+
     /**
      * @Route("/notifyurlproductpaymoo/ajax", name="notifyurlproductpaymoo", methods={"POST","GET"})
      */
     public function notifyurlproductpaymoo(Request $request): Response
     {
         $this->logger->error("notify call");
-            $status = $request->get('status');
+        $status = $request->get('status');
 
         if ($status == "successful") {
             return $this->redirectToRoute('home');
         } else {
-            return $this->redirectToRoute( 'boutique');
+            return $this->redirectToRoute('boutique');
         }
     }
+
     protected function generateRang()
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -498,7 +501,7 @@ $this->generateRang();
         $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
         $amount = $this->getAmount($client_votes);
         $notify_url = $this->generateUrl('notifyurlpaymooajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
-        $key=$this->params->get('paymookey');
+        $key = $this->params->get('paymookey');
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $amount,
@@ -510,25 +513,24 @@ $this->generateRang();
             'description' => 'Voting session',
             'email' => $client_email,
             'phone' => $client_phone,
-            'first_name' => 'Dossard'.$candidat->getDossard(),
+            'first_name' => 'Dossard' . $candidat->getDossard(),
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
             'redirectUrl' => $notify_url, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
             'callbackUrl' => $notify_url,
             'callbackOnFailureUrl' => $notify_url,
-            'ref_payment'=>$reference,
+            'ref_payment' => $reference,
             'redirectTarget' => 'TOP',
-            'transaction_number'=>$reference,
+            'transaction_number' => $reference,
             'merchantCustomerId' => $reference,
             'environement' => 'test',
         ];
         $client = new ClientPaymoo();
         $response = $client->postfinal("payment_url", $data);
-        $this->logger->info($response['response']);
-        $this->logger->info('------------------------'.$notify_url);
+        $this->logger->info('------------------------' . $notify_url);
         if ($response['response'] == "success") {
-            $this->createVote($candidat, $client_votes);
+            $this->createVote($candidat, $client_votes,$reference);
             $url = $response["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
@@ -539,6 +541,7 @@ $this->generateRang();
 
         //return new JsonResponse($data, 200);
     }
+
     /**
      * @Route("/sendpaiementinternationalpaymoo/ajax", name="sendpaiementinternationalpaymooajax", methods={"POST"})
      */
@@ -561,7 +564,7 @@ $this->generateRang();
         $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
         $amount = $this->getAmountInternational($client_votes);
         $notify_url = $this->generateUrl('notifyurlpaymooajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
-        $key=$this->params->get('paymookey');
+        $key = $this->params->get('paymookey');
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $amount,
@@ -573,7 +576,7 @@ $this->generateRang();
             'description' => 'Voting session',
             'email' => $client_email,
             'phone' => $client_phone,
-            'first_name' => 'Dossard'.$candidat->getDossard(),
+            'first_name' => 'Dossard' . $candidat->getDossard(),
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
@@ -589,7 +592,7 @@ $this->generateRang();
         $response = $client->postfinal("payment_url", $data);
         $this->logger->info($notify_url);
         if ($response['response'] == "success") {
-            $this->createVote($candidat, $client_votes);
+            $this->createVote($candidat, $client_votes,$reference);
             $url = $response["payment_url"];
             $this->logger->info($url);
             $link_array = explode('/', $url);
@@ -600,6 +603,7 @@ $this->generateRang();
 
         //return new JsonResponse($data, 200);
     }
+
     /**
      * @Route("/sendpaiementinternational/ajax", name="sendpaiementinternationalajax", methods={"POST"})
      */
@@ -622,7 +626,7 @@ $this->generateRang();
         $product = "vote miss-shinne " . $candidat->getFirstname() . " " . $candidat->getLastname();
         $amount = $this->getAmountInternational($client_votes);
         $notify_url = $this->generateUrl('notifyurlflutterajax', ['vote' => $this->getLast(), 'candidat' => $candidat_id]);
-        $key=$this->params->get('paymookey');
+        $key = $this->params->get('paymookey');
         $notify_url = $this->params->get('domain') . $notify_url;
         $data = [
             'amount' => $amount,
@@ -634,17 +638,17 @@ $this->generateRang();
             'description' => 'Voting session',
             'email' => $client_email,
             'phonenumber' => $client_phone,
-            'name' => 'Dossard:'.$candidat->getDossard().'-'.$candidat->getLastname(),
+            'name' => 'Dossard:' . $candidat->getDossard() . '-' . $candidat->getLastname(),
             'last_name' => $candidat->getLastname(),
             'logo' => 'http://www.piedpiper.com/app/themes/joystick-v27/images/logo.png',
             'pay_button_text' => "Valider le vote",
             'successurl' => $notify_url,
             'redirect_url' => $notify_url,
         ];
-        $response= $this->flutterwaveService->postPayement($data);
+        $response = $this->flutterwaveService->postPayement($data);
         $this->logger->info($notify_url);
         if ($response['status'] == "success") {
-            $this->createVote($candidat, $client_votes);
+            $this->createVote($candidat, $client_votes,$reference);
             $url = $response["data"]['link'];
             $this->logger->info($url);
             return $this->redirect($url);
@@ -654,6 +658,7 @@ $this->generateRang();
 
         //return new JsonResponse($data, 200);
     }
+
     protected function getRangVoting(Candidat $candidat)
     {
         $edition = $this->editionrepository->findOneBy(['status' => 'Publie']);

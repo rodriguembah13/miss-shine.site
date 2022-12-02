@@ -27,6 +27,10 @@ class Vote
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $reference;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $status;
     /**
      * @ORM\Column(type="datetime")
@@ -69,6 +73,24 @@ class Vote
     public function setNombreVote($nombreVote)
     {
         $this->nombreVote = $nombreVote;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param mixed $reference
+     * @return Vote
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
         return $this;
     }
 
