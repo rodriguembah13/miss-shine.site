@@ -404,7 +404,7 @@ class DefaultController extends AbstractController
         $res = json_decode($request->getContent(), true);
         $reference = $res['item_ref'];
         $this->logger->error($reference);
-        $status = $_POST['status'];
+        $status = $res['status'];
         $this->logger->error("----------------------- notify call" . $request->get('vote'));
         $this->logger->error("----------------------- notify call" . $status);
         // $vote_ = $this->voteRepository->find($request->get('vote'));
