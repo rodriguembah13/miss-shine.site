@@ -15,6 +15,7 @@
             <tr>
                 <th>Id</th>
                 <th>Libelle</th>
+                <th>Periode</th>
                 <th>Status</th>
                 <th>CreatedAt</th>
                 <th>UpdatedAt</th>
@@ -26,6 +27,7 @@
             <tr>
                 <td>{{ edition.id }}</td>
                 <td>{{ edition.libelle }}</td>
+                <td>{{ edition.year }}</td>
                 <td>{{ edition.status }}</td>
                 <td>{{ edition.createdAt ? edition.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ edition.updatedAt ? edition.updatedAt|date('Y-m-d H:i:s') : '' }}</td>

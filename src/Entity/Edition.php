@@ -23,6 +23,10 @@ class Edition
      */
     private $libelle;
     /**
+     * @ORM\Column(type="string", length=255,nullable=true)
+     */
+    private $year;
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $status;
@@ -56,6 +60,24 @@ class Edition
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * @param mixed $year
+     * @return Edition
+     */
+    public function setYear($year)
+    {
+        $this->year = $year;
+        return $this;
     }
 
     /**

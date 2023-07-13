@@ -63,7 +63,8 @@ class DefaultController extends AbstractController
         }
         return $this->render('default/index.html.twig', [
             'candidats' => $this->candidatRepository->findByEdition($edition),
-            'partenaires' => $this->partenaireRepository->findBy(['active' => true])
+            'partenaires' => $this->partenaireRepository->findBy(['active' => true]),
+            'edition'=>$edition
         ]);
     }
 

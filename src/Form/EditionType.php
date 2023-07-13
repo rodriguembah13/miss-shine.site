@@ -14,6 +14,7 @@ class EditionType extends AbstractType
     {
         $builder
             ->add('libelle')
+            ->add('year')
             ->add('status',ChoiceType::class,[
                 'choices'=>['En attente' => 'En attente', 'Publie' => 'Publie', 'Archive' => 'Archive']
             ])
