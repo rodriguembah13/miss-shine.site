@@ -490,7 +490,7 @@ class DefaultController extends AbstractController
      */
     public function redirectpaiement(Request $request): Response
     {
-        $reference=$_GET['orderId'];
+        $reference=$_GET['item'];
         $this->logger->error("----------------------- notify call" . $reference);
         // $vote_ = $this->voteRepository->find($request->get('vote'));
         $vote_ = $this->voteRepository->findOneBy(['reference' => $reference]);
