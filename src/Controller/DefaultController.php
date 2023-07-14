@@ -408,6 +408,7 @@ class DefaultController extends AbstractController
     public function notifyurlpaymoo(Request $request): Response
     {
         $res = json_decode($request->getContent(), true);
+        $orderId = $_GET['orderId'];
         $reference = $res['item_ref'];
         $this->logger->error($reference);
         $status = $res['status'];
@@ -484,7 +485,24 @@ class DefaultController extends AbstractController
         }
         $entityManager->flush();
     }
+    /**
+     * @Route("/redirectpaiement", name="redirectpaiement", methods={"POST","GET"})
+     */
+    public function redirectpaiement(Request $request): Response
+    {
+        $reference=$_GET['orderId'];
+        $this->logger->error("----------------------- notify call" . $reference);
+        // $vote_ = $this->voteRepository->find($request->get('vote'));
+        $vote_ = $this->voteRepository->findOneBy(['reference' => $reference]);
 
+            if ($vote_->getStatus() === "PENDING") {
+                    $this->updateVote($vote_, 'ACCEPTED');
+            }
+
+        return $this->render('default/success.html.twig', [
+            'title'=>"Success page"
+        ]);
+    }
     /**
      * @Route("/sendpaiement/ajax", name="sendpaiementajax", methods={"POST"})
      */
@@ -523,14 +541,15 @@ class DefaultController extends AbstractController
             'last_name' => $candidat->getLastname(),
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
-            'redirectUrl' => $notify_url, //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            'redirectUrl' => $this->generateUrl('redirectpaiement', ['item' => $reference]), //$this->siteUrl . $this->SUCCESS_REDIRECT_URL . $orderIdString,
+            "redirectOnFailureUrl" => $this->generateUrl('redirectpaiement', ['item' => $reference]),
             'callbackUrl' => $notify_url,
             'callbackOnFailureUrl' => $notify_url,
             'ref_payment' => $reference,
             'redirectTarget' => 'TOP',
             'transaction_number' => $reference,
             'merchantCustomerId' => $reference,
-            'environement' => 'test',
+            'environement' => 'live',
         ];
         $client = new ClientPaymoo();
         $response = $client->postfinal("payment_url", $data);
