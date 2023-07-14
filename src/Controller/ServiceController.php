@@ -44,7 +44,9 @@ class ServiceController extends AbstractController
      */
     public function index(): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('service/index.html.twig', [
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -53,7 +55,9 @@ class ServiceController extends AbstractController
      */
     public function formation(): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('service/formation.html.twig', [
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -62,7 +66,9 @@ class ServiceController extends AbstractController
      */
     public function developpement(): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('service/developpement.html.twig', [
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -71,7 +77,9 @@ class ServiceController extends AbstractController
      */
     public function entreprenariat(): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('service/entreprenariat.html.twig', [
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }

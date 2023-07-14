@@ -73,11 +73,13 @@ class DefaultController extends AbstractController
      */
     public function inscription(Request $request): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         if ($request->getMethod() == "POST") {
 
         }
         return $this->render('default/inscription.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -90,6 +92,7 @@ class DefaultController extends AbstractController
         $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('default/candidats.html.twig', [
             'candidats' => $this->candidatRepository->findByEdition($edition),
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
@@ -99,8 +102,10 @@ class DefaultController extends AbstractController
      */
     public function criteres(): Response
     {
+        $edition = $this->editionrepository->findOneByStatuspulie();
         return $this->render('default/criteres.html.twig', [
             'candidats' => $this->candidatRepository->findAll(),
+            'edition'=>$edition,
             'partenaires' => $this->partenaireRepository->findBy(['active' => true])
         ]);
     }
