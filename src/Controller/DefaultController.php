@@ -496,10 +496,29 @@ class DefaultController extends AbstractController
         $vote_ = $this->voteRepository->findOneBy(['reference' => $reference]);
 
             if ($vote_->getStatus() === "PENDING") {
+                $this->logger->error("----------------------- pay ok" . $reference);
                     $this->updateVote($vote_, 'ACCEPTED');
             }
 
         return $this->render('default/success.html.twig', [
+            'title'=>"Success page"
+        ]);
+    }
+    /**
+     * @Route("/failpaiement", name="failpaiement", methods={"POST","GET"})
+     */
+    public function failpaiement(Request $request): Response
+    {
+        $reference=$_GET['item'];
+        $this->logger->error("----------------------- notify call" . $reference);
+        // $vote_ = $this->voteRepository->find($request->get('vote'));
+        $vote_ = $this->voteRepository->findOneBy(['reference' => $reference]);
+
+        if ($vote_->getStatus() === "PENDING") {
+            $this->updateVote($vote_, 'REFUSED');
+        }
+
+        return $this->render('default/failed.html.twig', [
             'title'=>"Success page"
         ]);
     }
