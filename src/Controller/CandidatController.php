@@ -46,6 +46,7 @@ class CandidatController extends AbstractController
      */
     public function index(Request $request, CandidatRepository $candidatRepository): Response
     {
+        $edition=$this->editionRepository->findOneByStatuspulie();
         $table = $this->dataTableFactory->create()
             ->add('idx', TextColumn::class, [
                 'field' => 'e.id',
@@ -108,10 +109,12 @@ class CandidatController extends AbstractController
             ->addOrderBy('nombreVote',  DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Candidat::class,
-                'query' => function (QueryBuilder $builder) {
+                'query' => function (QueryBuilder $builder) use ($edition) {
                     $builder
                         ->select('e')
                         ->from(Candidat::class, 'e')
+                        ->andWhere('e.edition  = :edition')
+                        ->setParameter('edition',$edition)
                         //->orderBy("e.position", "ASC")
                     ;
                 },
@@ -177,7 +180,7 @@ class CandidatController extends AbstractController
             if ($imageFilename) {
                 $destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
                 $originalFilename = pathinfo($imageFilename->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFilename->guessExtension();
+                $newFilename = str_replace(" ","-",$originalFilename) . '-' . uniqid() . '.' . $imageFilename->guessExtension();
 
                 try {
                     $imageFilename->move(
@@ -234,8 +237,7 @@ class CandidatController extends AbstractController
             if ($imageFilename) {
                 $destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
                 $originalFilename = pathinfo($imageFilename->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFilename->guessExtension();
-
+                $newFilename = str_replace(" ","-",$originalFilename) . '-' . uniqid() . '.' . $imageFilename->guessExtension();
                 try {
                     $imageFilename->move(
                         $destination,
