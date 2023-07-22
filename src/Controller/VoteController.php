@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Vote;
 use App\Form\VoteType;
+use App\Repository\EditionRepository;
 use App\Repository\VoteRepository;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -23,13 +24,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class VoteController extends AbstractController
 {
     private $dataTableFactory;
-
+    private $editionRepository;
     /**
      * @param $dataTableFactory
      */
-    public function __construct(DataTableFactory $dataTableFactory)
+    public function __construct(EditionRepository $editionRepository,DataTableFactory $dataTableFactory)
     {
         $this->dataTableFactory = $dataTableFactory;
+        $this->editionRepository = $editionRepository;
     }
 
     /**
@@ -37,6 +39,7 @@ class VoteController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $edition=$this->editionRepository->findOneByStatuspulie();
         $table = $this->dataTableFactory->create()
             ->add('idx', TextColumn::class,[
                 'field' => 'e.id',
@@ -84,12 +87,14 @@ class VoteController extends AbstractController
 
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Vote::class,
-                'query' => function (QueryBuilder $builder) {
+                'query' => function (QueryBuilder $builder) use ($edition)  {
                     $builder
                         ->select('e')
                         ->addSelect('c')
                         ->from(Vote::class, 'e')
                         ->leftJoin('e.candidat', 'c')
+                        ->andWhere('c.edition  = :edition')
+                        ->setParameter('edition',$edition)
                       //  ->orderBy('e.id','DESC')
                     ;
                 },
