@@ -66,6 +66,7 @@ class BilletController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $edition=$this->editionrepository->findOneByStatuspulie();
         $table = $this->dataTableFactory->create()
             ->add('idx', TextColumn::class, [
                 'field' => 'e.id',
@@ -113,12 +114,16 @@ class BilletController extends AbstractController
                  }])*/
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Billet::class,
-                'query' => function (QueryBuilder $builder) {
+                'query' => function (QueryBuilder $builder) use ($edition) {
                     $builder
                         ->select('e')
                         ->addSelect('c')
                         ->from(Billet::class, 'e')
-                        ->leftJoin('e.candidat', 'c')// ->orderBy("e.id", "ASC")
+                        ->leftJoin('e.candidat', 'c')
+                        ->andWhere('c.edition  = :edition')
+                        ->andWhere('e.status  = :status')
+                        ->setParameter('edition',$edition)
+                        ->setParameter('status',"accepted")
                     ;
                 },
             ])->handleRequest($request);
@@ -226,9 +231,9 @@ class BilletController extends AbstractController
             'last_name' => $lastname,
             'public_key' => $key,
             'logo' => 'https://paymooney.com/images/logo_paymooney2.png',
-            'redirectUrl' => $current_url . '?orderpay=' . $reference,
+            'redirectUrl' => $this->params->get('domain') .$this->generateUrl('bielletpaiement', ['item' => $reference]),
             'callbackUrl' => $notify_url,
-            'callbackOnFailureUrl' => $notify_url,
+            'callbackOnFailureUrl' => $this->params->get('domain') .$this->generateUrl('failbiellet', ['item' => $reference]),
             'redirectTarget' => 'TOP',
             'merchantCustomerId' => $reference,
             'environement' => 'test',
@@ -237,6 +242,21 @@ class BilletController extends AbstractController
         $response = $client->postfinal("payment_url", $data);
         $this->logger->info($response['response']);
         if ($response['response'] == "success") {
+            $candidat_ = $this->candidatRepository->find($candidat_id);
+            $billet = new Billet();
+            $billet->setReference($reference);
+            $billet->setEmail($email);
+            $billet->setFirstname($firstname);
+            $billet->setLastname($lastname);
+            $billet->setAmount($initprice*$quantite);
+            $billet->setPhone($phone);
+            $billet->setVille($region);
+            $billet->setCandidat($candidat_);
+            $billet->setStatus("pending");
+            $billet->setEdition($this->editionrepository->findOneByStatuspulie());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($billet);
+            $entityManager->flush();
             $url = $response["payment_url"];
             $link_array = explode('/', $url);
             return $this->redirect($url);
@@ -244,7 +264,42 @@ class BilletController extends AbstractController
 
         return $this->redirectToRoute("billeteries");
     }
+    /**
+     * @Route("/billet/redirectpaiement", name="bielletpaiement", methods={"POST","GET"})
+     */
+    public function redirectpaiement(Request $request): Response
+    {
+        $reference=$_GET['item'];
+        $this->logger->error("----------------------- notify call" . $reference);
+        $bielletrie= $this->billetRepository->find($reference);
+        if ($bielletrie->getStatus()=="pending"){
+            $entityManager = $this->getDoctrine()->getManager();$bielletrie->setStatus('accepted');
+            $entityManager->flush();
+        }
 
+
+        return $this->render('default/success.html.twig', [
+            'title'=>"Success page"
+        ]);
+    }
+    /**
+     * @Route("/biellet/failpaiement", name="failbiellet", methods={"POST","GET"})
+     */
+    public function failpaiement(Request $request): Response
+    {
+        $reference=$_GET['item'];
+        $this->logger->error("----------------------- notify call" . $reference);
+        $bielletrie= $this->billetRepository->find($reference);
+        if ($bielletrie->getStatus() === "pending") {
+            $entityManager = $this->getDoctrine()->getManager();
+            $bielletrie->setStatus('denied');
+            $entityManager->flush();
+        }
+
+        return $this->render('default/failed.html.twig', [
+            'title'=>"Success page"
+        ]);
+    }
     private function getLast()
     {
         $last = null;

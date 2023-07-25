@@ -50,7 +50,14 @@ class Billet
      * @ORM\ManyToOne(targetEntity=Edition::class, inversedBy="billets")
      */
     private $edition;
-
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $reference;
     /**
      * @ORM\Column(type="datetime_immutable")
      */
@@ -67,6 +74,42 @@ class Billet
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param mixed $reference
+     * @return Billet
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+        return $this;
+    }
+
+    /**
+     * @param mixed $status
+     * @return Billet
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
     }
 
     /**
